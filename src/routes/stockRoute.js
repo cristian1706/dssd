@@ -27,7 +27,7 @@ module.exports = function(app) {
 					msj: "Error"
 				})
 			}
-		})
+		});
 	});
 
 	app.put('/producttypes/:id', (req, res) => {
@@ -50,8 +50,30 @@ module.exports = function(app) {
 				})
 			}
 
-		})
-	})
+		});
+	});
+
+	app.delete('/producttypes/:id', (req, res) => {
+		stockModel.deleteProducttype(req.params.id, (err, data) => {
+			if (data && data.msj === 'deleted') {
+				res.json({
+					success: true,
+					msj: "Productype eliminado",
+					data: data
+				})
+			} else {
+				if (data.msj === 'no existe') {
+					res.status(404).json({
+						msj: "No existe ese id en la bd"
+					})
+				} else {
+					res.status(500).json({
+						msj: "Error"
+					})
+				}
+			}
+		});
+	});
 }
 
 

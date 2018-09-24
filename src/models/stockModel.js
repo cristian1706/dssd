@@ -20,7 +20,7 @@ stockModel.getProducttypes = (callback) => {
 			}
 		})
 	}
-}
+};
 
 stockModel.insertProducttype = (producttypeData, callback) => {
 	if (connection) {
@@ -34,7 +34,7 @@ stockModel.insertProducttype = (producttypeData, callback) => {
 			}
 		})
 	}
-}
+};
 
 stockModel.updateProducttype = (producttypeData, callback) => {
 	if (connection) {
@@ -43,7 +43,7 @@ stockModel.updateProducttype = (producttypeData, callback) => {
 			initials = ${connection.escape(producttypeData.initials)},
 			description = ${connection.escape(producttypeData.description)}
 			WHERE id =  ${connection.escape(producttypeData.id)}
-			`
+			`;
 		connection.query(sql, (err, rows) => {
 			if (err) {
 				throw err;
@@ -53,6 +53,35 @@ stockModel.updateProducttype = (producttypeData, callback) => {
 				});
 			}
 		})
+	}
+};
+
+stockModel.deleteProducttype = (id, callback) => {
+	if (connection) {
+		let sql = `
+			SELECT * FROM producttype WHERE id = ${connection.escape(id)}
+		`;
+		connection.query(sql, (err, row) => {
+			console.log(row);
+			if (row) {
+				let sql = `
+					DELETE FROM producttype WHERE id = ${id}
+				`;
+				connection.query(sql, (err, rows) => {
+					if (err) {
+						throw err;
+					} else {
+						callback(null, {
+							msj: "deleted"
+						})
+					}
+				})
+			} else {
+				callback(null, {
+					msj: "no existe"
+				})
+			}
+		});
 	}
 };
 
