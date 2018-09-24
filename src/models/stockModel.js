@@ -28,11 +28,33 @@ stockModel.insertProducttype = (producttypeData, callback) => {
 			if (err) {
 				throw err;
 			} else {
-				callback(null, rows);
+				callback(null, {
+					'id_insertado': rows.insertId
+				});
 			}
 		})
 	}
 }
+
+stockModel.updateProducttype = (producttypeData, callback) => {
+	if (connection) {
+		const sql = `
+			UPDATE producttype SET
+			initials = ${connection.escape(producttypeData.initials)},
+			description = ${connection.escape(producttypeData.description)}
+			WHERE id =  ${connection.escape(producttypeData.id)}
+			`
+		connection.query(sql, (err, rows) => {
+			if (err) {
+				throw err;
+			} else {
+				callback(null, {
+					'msj': "success"
+				});
+			}
+		})
+	}
+};
 
 
 module.exports = stockModel;
