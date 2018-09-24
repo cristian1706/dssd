@@ -35,4 +35,5 @@ app.get('/producttype', function (req, res) {
   });
 });
 
+
 //connection.end();
