@@ -10,6 +10,7 @@ app.use(morgan('dev'));
 
 //routes
 require('./routes/stockRoute.js')(app);
+require('./routes/rrhhRoute.js')(app);
 
 
 app.listen(3000, function () {

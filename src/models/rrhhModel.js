@@ -4,17 +4,17 @@ var connection = mysql.createConnection({
 	host     : 'localhost',
 	user     : 'root',
 	password : '1234',
-	database: "stock"
+	database: "rrhh"
 });
 
 
-let stockModel = {};
+let rrhhModel = {};
 
-/* ----------------------------------- MODELO DE PRODUCTTYPE -----------------------------------*/
+/* ----------------------------------- MODELO DE EMPLOYEE -----------------------------------*/
 
-stockModel.getProducttypes = (callback) => {
+rrhhModel.getEmployees = (callback) => {
 	if (connection) {
-		connection.query("SELECT * FROM producttype ORDER BY id", (err, rows) => {
+		connection.query("SELECT * FROM employee ORDER BY id", (err, rows) => {
 			if (err) {
 				throw err;
 			} else {
@@ -24,9 +24,9 @@ stockModel.getProducttypes = (callback) => {
 	}
 };
 
-stockModel.insertProducttype = (producttypeData, callback) => {
+rrhhModel.insertEmployee = (employeeData, callback) => {
 	if (connection) {
-		connection.query("INSERT INTO producttype SET ?", producttypeData, (err, rows) => {
+		connection.query("INSERT INTO employee SET ?", employeeData, (err, rows) => {
 			if (err) {
 				throw err;
 			} else {
@@ -38,13 +38,16 @@ stockModel.insertProducttype = (producttypeData, callback) => {
 	}
 };
 
-stockModel.updateProducttype = (producttypeData, callback) => {
+rrhhModel.updateEmployee = (employeeData, callback) => {
 	if (connection) {
 		const sql = `
-			UPDATE producttype SET
-			initials = ${connection.escape(producttypeData.initials)},
-			description = ${connection.escape(producttypeData.description)}
-			WHERE id =  ${connection.escape(producttypeData.id)}
+			UPDATE employee SET
+			firstname = ${connection.escape(employeeData.firstname)},
+			surname = ${connection.escape(employeeData.surname)},
+			email = ${connection.escape(employeeData.email)},
+			password = ${connection.escape(employeeData.password)},
+			employeetype = ${connection.escape(employeeData.employeetype)},
+			WHERE id =  ${connection.escape(employeeData.id)}
 			`;
 		connection.query(sql, (err, rows) => {
 			if (err) {
@@ -58,15 +61,15 @@ stockModel.updateProducttype = (producttypeData, callback) => {
 	}
 };
 
-stockModel.deleteProducttype = (id, callback) => {
+rrhhModel.deleteEmployee = (id, callback) => {
 	if (connection) {
 		let sql = `
-			SELECT * FROM producttype WHERE id = ${connection.escape(id)}
+			SELECT * FROM employee WHERE id = ${connection.escape(id)}
 		`;
 		connection.query(sql, (err, row) => {
 			if (row) {				//CUANDO BORRO UN ID QUE NO EXISTE, INFORMA QUE LO BORRÓ, CORREGIR
 				let sql = `
-					DELETE FROM producttype WHERE id = ${id}
+					DELETE FROM employee WHERE id = ${id}
 				`;
 				connection.query(sql, (err, rows) => {
 					if (err) {
@@ -86,11 +89,11 @@ stockModel.deleteProducttype = (id, callback) => {
 	}
 };
 
-/* ----------------------------------- MODELO DE PRODUCT ------------------------------------*/
+/* ----------------------------------- MODELO DE EMPLOYEETYPE ------------------------------------*/
 
-stockModel.getProducts = (callback) => {
+rrhhModel.getEmployeetypes = (callback) => {
 	if (connection) {
-		connection.query("SELECT * FROM product ORDER BY id", (err, rows) => {
+		connection.query("SELECT * FROM employeetype ORDER BY id", (err, rows) => {
 			if (err) {
 				throw err;
 			} else {
@@ -100,9 +103,9 @@ stockModel.getProducts = (callback) => {
 	}
 };
 
-stockModel.insertProduct = (productData, callback) => {
+rrhhModel.insertEmployeetype = (employeetypeData, callback) => {
 	if (connection) {
-		connection.query("INSERT INTO product SET ?", productData, (err, rows) => {
+		connection.query("INSERT INTO employeetype SET ?", employeetypeData, (err, rows) => {
 			if (err) {
 				throw err;
 			} else {
@@ -114,15 +117,13 @@ stockModel.insertProduct = (productData, callback) => {
 	}
 };
 
-stockModel.updateProduct = (productData, callback) => {
+rrhhModel.updateEmployeetype = (employeetypeData, callback) => {
 	if (connection) {
 		const sql = `
-			UPDATE product SET
-			name = ${connection.escape(productData.name)},
-			costprice = ${connection.escape(productData.costprice)},
-			saleprice = ${connection.escape(productData.saleprice)},
-			producttype = ${connection.escape(productData.producttype)},
-			WHERE id =  ${connection.escape(productData.id)}
+			UPDATE employeetype SET
+			initials = ${connection.escape(employeetypeData.initials)},
+			description = ${connection.escape(employeetypeData.description)}
+			WHERE id =  ${connection.escape(employeetypeData.id)}
 			`;
 		connection.query(sql, (err, rows) => {
 			if (err) {
@@ -136,15 +137,15 @@ stockModel.updateProduct = (productData, callback) => {
 	}
 };
 
-stockModel.deleteProduct = (id, callback) => {
+rrhhModel.deleteEmployeetype = (id, callback) => {
 	if (connection) {
 		let sql = `
-			SELECT * FROM product WHERE id = ${connection.escape(id)}
+			SELECT * FROM employeetype WHERE id = ${connection.escape(id)}
 		`;
 		connection.query(sql, (err, row) => {
 			if (row) {				//CUANDO BORRO UN ID QUE NO EXISTE, INFORMA QUE LO BORRÓ, CORREGIR
 				let sql = `
-					DELETE FROM product WHERE id = ${id}
+					DELETE FROM employeetype WHERE id = ${id}
 				`;
 				connection.query(sql, (err, rows) => {
 					if (err) {
@@ -165,4 +166,5 @@ stockModel.deleteProduct = (id, callback) => {
 };
 
 
-module.exports = stockModel;
+module.exports = rrhhModel;
+
