@@ -30,7 +30,8 @@ CREATE TABLE `employee` (
   `password` varchar(100) DEFAULT NULL,
   `employeetype` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `employee_employeetype_FK` FOREIGN KEY (`id`) REFERENCES `employeetype` (`id`)
+  FOREIGN KEY (employeetype) REFERENCES employeetype(id)
+  # CONSTRAINT `employee_employeetype_FK` FOREIGN KEY (`id`) REFERENCES `employeetype` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

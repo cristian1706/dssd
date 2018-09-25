@@ -29,7 +29,8 @@ CREATE TABLE `product` (
   `saleprice` int(11) NOT NULL,
   `producttype` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `product_producttype_FK` FOREIGN KEY (`id`) REFERENCES `producttype` (`id`)
+  FOREIGN KEY (producttype) REFERENCES producttype(id)
+  # CONSTRAINT `product_producttype_FK` FOREIGN KEY (`id`) REFERENCES `producttype` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
