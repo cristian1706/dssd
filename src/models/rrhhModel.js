@@ -43,24 +43,32 @@ rrhhModel.updateEmployee = (employeeData, callback) => {
 		let sql = `SELECT * FROM employee WHERE id = ${connection.escape(employeeData.id)}`;
 		connection.query(sql, (err, row) => {
 			if (row[0] != null) {
-				let sql = `
-				UPDATE employee SET
-				firstname = ${connection.escape(employeeData.firstname)},
-				surname = ${connection.escape(employeeData.surname)},
-				email = ${connection.escape(employeeData.email)},
-				password = ${connection.escape(employeeData.password)},
-				employeetype = ${connection.escape(employeeData.employeetype)}
-				WHERE id = ${connection.escape(employeeData.id)}
-				`;
-				connection.query(sql, (err, rows) => {
-					if (err) {
-						throw err;
+				rrhhModel.getEmployeeByEmail(employeeData, (err, data) => {
+					if (data.existe == false) {
+						let sql = `
+						UPDATE employee SET
+						firstname = ${connection.escape(employeeData.firstname)},
+						surname = ${connection.escape(employeeData.surname)},
+						email = ${connection.escape(employeeData.email)},
+						password = ${connection.escape(employeeData.password)},
+						employeetype = ${connection.escape(employeeData.employeetype)}
+						WHERE id = ${connection.escape(employeeData.id)}
+						`;
+						connection.query(sql, (err, rows) => {
+							if (err) {
+								throw err;
+							} else {
+								callback(null, {
+									'msj': "actualizado"
+								});
+							}
+						})
 					} else {
 						callback(null, {
-							'msj': "actualizado"
+							'msj': "email ocupado"
 						});
 					}
-				})
+				});
 			} else {
 				callback(null, {
 					'msj': "no existe"
@@ -121,6 +129,7 @@ rrhhModel.getEmployeeByEmail = (employeeData, callback) => {
 
 /* ----------------------------------- MODELO DE EMPLOYEETYPE ------------------------------------*/
 
+
 rrhhModel.getEmployeetypes = (callback) => {
 	if (connection) {
 		connection.query("SELECT * FROM employeetype ORDER BY id", (err, rows) => {
@@ -152,21 +161,29 @@ rrhhModel.updateEmployeetype = (employeetypeData, callback) => {
 		let sql = `SELECT * FROM employeetype WHERE id = ${connection.escape(employeetypeData.id)}`;
 		connection.query(sql, (err, row) => {
 			if (row[0] != null) {
-				let sql = `
-				UPDATE employeetype SET
-				initials = ${connection.escape(employeetypeData.initials)},
-				description = ${connection.escape(employeetypeData.description)}
-				WHERE id =  ${connection.escape(employeetypeData.id)}
-				`;
-				connection.query(sql, (err, rows) => {
-					if (err) {
-						throw err;
+				rrhhModel.getEmployeetypeByInitials(employeetypeData, (err, data) => {
+					if (data.existe == false) {
+						let sql = `
+						UPDATE employeetype SET
+						initials = ${connection.escape(employeetypeData.initials)},
+						description = ${connection.escape(employeetypeData.description)}
+						WHERE id =  ${connection.escape(employeetypeData.id)}
+						`;
+						connection.query(sql, (err, rows) => {
+							if (err) {
+								throw err;
+							} else {
+								callback(null, {
+									'msj': "actualizado"
+								});
+							}
+						})
 					} else {
 						callback(null, {
-							'msj': "actualizado"
+							'msj': "iniciales ocupadas"
 						});
 					}
-				})
+				});
 			} else {
 				callback(null, {
 					'msj': "no existe"

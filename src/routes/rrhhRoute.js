@@ -66,10 +66,17 @@ module.exports = function(app) {
 						msj: "No existe ese id en la bd"
 					})
 				} else {
-					res.status(500).json({
-						success: false,
-						msj: "Error al actualizar"
-					})
+					if (data.msj == 'email ocupado') {
+						res.status(550).json({
+							success: false,
+							msj: "El email ya existe en la BD"
+						}) 
+					} else {
+						res.status(500).json({
+							success: false,
+							msj: "Error al actualizar"
+						})
+					}
 				}
 			}
 		});
@@ -114,8 +121,8 @@ module.exports = function(app) {
 			initials: req.body.initials,
 			description: req.body.description
 		};
-		rrhhModel.getEmployeetypeByInitials(employeeData, (err, data) => {
-			if (data.existe === false) {
+		rrhhModel.getEmployeetypeByInitials(employeetypeData, (err, data) => {
+			if (data.existe == false) {
 				rrhhModel.insertEmployeetype(employeetypeData, (err, data) => {
 					if (data && data.id_insertado) {
 						res.json({
@@ -158,10 +165,17 @@ module.exports = function(app) {
 						msj: "No existe ese id en la bd"
 					})
 				} else {
-					res.status(500).json({
-						success: false,
-						msj: "Error al actualizar"
-					})
+					if (data.msj == 'iniciales ocupadas') {
+						res.status(550).json({
+							success: false,
+							msj: "Las iniciales del tipo de empleado ya existen en la BD"
+						}) 
+					} else {
+						res.status(500).json({
+							success: false,
+							msj: "Error al actualizar"
+						})
+					}
 				}
 			}
 		});
@@ -173,7 +187,6 @@ module.exports = function(app) {
 				res.json({
 					success: true,
 					msj: `Tipo de empleado ${req.params.id} eliminado`,
-					data: data
 				})
 			} else {
 				if (data.msj == 'no existe') {
@@ -189,5 +202,7 @@ module.exports = function(app) {
 				}
 			}
 		});
-	});	
-}
+	});
+
+
+};
