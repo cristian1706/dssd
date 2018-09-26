@@ -40,7 +40,7 @@ stockModel.insertProducttype = (producttypeData, callback) => {
 
 stockModel.updateProducttype = (producttypeData, callback) => {
 	if (connection) {
-		const sql = `
+		let sql = `
 			UPDATE producttype SET
 			initials = ${connection.escape(producttypeData.initials)},
 			description = ${connection.escape(producttypeData.description)}
@@ -51,7 +51,7 @@ stockModel.updateProducttype = (producttypeData, callback) => {
 				throw err;
 			} else {
 				callback(null, {
-					'msj': "success"
+					'msj': "actualizado"
 				});
 			}
 		})
@@ -64,7 +64,7 @@ stockModel.deleteProducttype = (id, callback) => {
 			SELECT * FROM producttype WHERE id = ${connection.escape(id)}
 		`;
 		connection.query(sql, (err, row) => {
-			if (row) {				//CUANDO BORRO UN ID QUE NO EXISTE, INFORMA QUE LO BORRÓ, CORREGIR
+			if (row) {
 				let sql = `
 					DELETE FROM producttype WHERE id = ${id}
 				`;
@@ -73,7 +73,7 @@ stockModel.deleteProducttype = (id, callback) => {
 						throw err;
 					} else {
 						callback(null, {
-							msj: "deleted"
+							msj: "borrado"
 						})
 					}
 				})
@@ -116,7 +116,7 @@ stockModel.insertProduct = (productData, callback) => {
 
 stockModel.updateProduct = (productData, callback) => {
 	if (connection) {
-		const sql = `
+		let sql = `
 			UPDATE product SET
 			name = ${connection.escape(productData.name)},
 			costprice = ${connection.escape(productData.costprice)},
@@ -129,7 +129,7 @@ stockModel.updateProduct = (productData, callback) => {
 				throw err;
 			} else {
 				callback(null, {
-					'msj': "success"
+					'msj': "actualizado"
 				});
 			}
 		})
@@ -142,7 +142,7 @@ stockModel.deleteProduct = (id, callback) => {
 			SELECT * FROM product WHERE id = ${connection.escape(id)}
 		`;
 		connection.query(sql, (err, row) => {
-			if (row) {				//CUANDO BORRO UN ID QUE NO EXISTE, INFORMA QUE LO BORRÓ, CORREGIR
+			if (row) {
 				let sql = `
 					DELETE FROM product WHERE id = ${id}
 				`;
@@ -151,7 +151,7 @@ stockModel.deleteProduct = (id, callback) => {
 						throw err;
 					} else {
 						callback(null, {
-							msj: "deleted"
+							msj: "borrado"
 						})
 					}
 				})

@@ -11,7 +11,7 @@ module.exports = function(app) {
 	});
 
 	app.post('/employee', (req, res) => {
-		const employeeData = { //NO SE PUEDE INSERTAR POR UN PROBLEMA CON LA CLAVE FORANEA DE EMPLOYEETYPE
+		const employeeData = {
 			id: null,
 			firstname: req.body.firstname,
 			surname: req.body.surname,
@@ -20,7 +20,7 @@ module.exports = function(app) {
 			employeetype: req.body.employeetype
 		};
 		rrhhModel.getEmployeeByEmail(employeeData, (err, data) => {
-			if (data.msj === true) {
+			if (data.existe == false) {
 				rrhhModel.insertEmployee(employeeData, (err, data) => {
 					if (data && data.id_insertado) {
 						res.json({
@@ -54,37 +54,43 @@ module.exports = function(app) {
 			employeetype: req.body.employeetype
 		};
 		rrhhModel.updateEmployee(employeeData, (err, data) => {
-			if (data && data.msj) {
+			if (data && data.msj == 'actualizado') {
 				res.json({
 					success: true,
-					msj: "Empleado actualizado",
-					data: data
+					msj: `Empleado ${req.params.id} actualizado`
 				})
 			} else {
-				res.json({
-					success: false,
-					msj: "Error al actualizar"
-				})
+				if (data.msj == 'no existe') {
+					res.status(404).json({
+						success: false,
+						msj: "No existe ese id en la bd"
+					})
+				} else {
+					res.status(500).json({
+						success: false,
+						msj: "Error al actualizar"
+					})
+				}
 			}
-
 		});
 	});
 
 	app.delete('/employee/:id', (req, res) => {
 		rrhhModel.deleteEmployee(req.params.id, (err, data) => {
-			if (data && data.msj === 'deleted') {
+			if (data && data.msj == 'borrado') {
 				res.json({
 					success: true,
-					msj: "Empleado eliminado",
-					data: data
+					msj: `Empleado ${req.params.id} eliminado`,
 				})
 			} else {
-				if (data.msj === 'no existe') {
+				if (data.msj == 'no existe') {
 					res.status(404).json({
+						success: false,
 						msj: "No existe ese id en la bd"
 					})
 				} else {
 					res.status(500).json({
+						success: false,
 						msj: "Error al borrar"
 					})
 				}
@@ -108,17 +114,26 @@ module.exports = function(app) {
 			initials: req.body.initials,
 			description: req.body.description
 		};
-		rrhhModel.insertEmployeetype(employeetypeData, (err, data) => {
-			if (data && data.id_insertado) {
-				res.json({
-					success: true,
-					msj: "Tipo de empleado insertado",
-					data: data
-				})
+		rrhhModel.getEmployeetypeByInitials(employeeData, (err, data) => {
+			if (data.existe === false) {
+				rrhhModel.insertEmployeetype(employeetypeData, (err, data) => {
+					if (data && data.id_insertado) {
+						res.json({
+							success: true,
+							msj: "Tipo de empleado insertado",
+							data: data
+						})
+					} else {
+						res.status(500).json({
+							success: false,
+							msj: "Error al insertar"
+						})
+					}
+				});
 			} else {
-				res.status(500).json({
+				res.status(550).json({
 					success: false,
-					msj: "Error al insertar"
+					msj: "Las iniciales del tipo de empleado ya existen en la BD"
 				})
 			}
 		});
@@ -131,37 +146,44 @@ module.exports = function(app) {
 			description: req.body.description
 		};
 		rrhhModel.updateEmployeetype(employeetypeData, (err, data) => {
-			if (data && data.msj) {
+			if (data && data.msj == 'actualizado') {
 				res.json({
 					success: true,
-					msj: "Tipo de empleado actualizado",
-					data: data
+					msj: `Tipo de empleado ${req.params.id} actualizado`
 				})
 			} else {
-				res.json({
-					success: false,
-					msj: "Error al actualizar"
-				})
+				if (data.msj == 'no existe') {
+					res.status(404).json({
+						success: false,
+						msj: "No existe ese id en la bd"
+					})
+				} else {
+					res.status(500).json({
+						success: false,
+						msj: "Error al actualizar"
+					})
+				}
 			}
-
 		});
 	});
 
 	app.delete('/employeetype/:id', (req, res) => {
 		rrhhModel.deleteEmployeetype(req.params.id, (err, data) => {
-			if (data && data.msj === 'deleted') {
+			if (data && data.msj == 'borrado') {
 				res.json({
 					success: true,
-					msj: "Tipo de empleado eliminado",
+					msj: `Tipo de empleado ${req.params.id} eliminado`,
 					data: data
 				})
 			} else {
-				if (data.msj === 'no existe') {
+				if (data.msj == 'no existe') {
 					res.status(404).json({
+						success: false,
 						msj: "No existe ese id en la bd"
 					})
 				} else {
 					res.status(500).json({
+						success: false,
 						msj: "Error al borrar"
 					})
 				}

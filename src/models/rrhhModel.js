@@ -40,22 +40,31 @@ rrhhModel.insertEmployee = (employeeData, callback) => {
 
 rrhhModel.updateEmployee = (employeeData, callback) => {
 	if (connection) {
-		const sql = `
-			UPDATE employee SET
-			firstname = ${connection.escape(employeeData.firstname)},
-			surname = ${connection.escape(employeeData.surname)},
-			email = ${connection.escape(employeeData.email)},
-			password = ${connection.escape(employeeData.password)},
-			employeetype = ${connection.escape(employeeData.employeetype)}
-			WHERE id = ${connection.escape(employeeData.id)}
-			`;
-		connection.query(sql, (err, rows) => {
-			if (err) {
-				throw err;
+		let sql = `SELECT * FROM employee WHERE id = ${connection.escape(employeeData.id)}`;
+		connection.query(sql, (err, row) => {
+			if (row[0] != null) {
+				let sql = `
+				UPDATE employee SET
+				firstname = ${connection.escape(employeeData.firstname)},
+				surname = ${connection.escape(employeeData.surname)},
+				email = ${connection.escape(employeeData.email)},
+				password = ${connection.escape(employeeData.password)},
+				employeetype = ${connection.escape(employeeData.employeetype)}
+				WHERE id = ${connection.escape(employeeData.id)}
+				`;
+				connection.query(sql, (err, rows) => {
+					if (err) {
+						throw err;
+					} else {
+						callback(null, {
+							'msj': "actualizado"
+						});
+					}
+				})
 			} else {
 				callback(null, {
-					'msj': "success"
-				});
+					'msj': "no existe"
+				})
 			}
 		})
 	}
@@ -67,7 +76,7 @@ rrhhModel.deleteEmployee = (id, callback) => {
 			SELECT * FROM employee WHERE id = ${connection.escape(id)}
 		`;
 		connection.query(sql, (err, row) => {
-			if (row) {				//CUANDO BORRO UN ID QUE NO EXISTE, INFORMA QUE LO BORRÓ, CORREGIR
+			if (row[0] != null) {
 				let sql = `
 					DELETE FROM employee WHERE id = ${id}
 				`;
@@ -76,7 +85,7 @@ rrhhModel.deleteEmployee = (id, callback) => {
 						throw err;
 					} else {
 						callback(null, {
-							msj: "deleted"
+							msj: "borrado"
 						})
 					}
 				})
@@ -96,9 +105,15 @@ rrhhModel.getEmployeeByEmail = (employeeData, callback) => {
 			if (err) {
 				throw err;
 			} else {
-				callback(null, {
-					'existe': true
-				});
+				if (rows[0] == null){
+					callback(null, {
+						'existe': false
+					});
+				} else {
+					callback(null, {
+						'existe': true
+					});
+				}
 			}
 		})
 	}
@@ -134,19 +149,28 @@ rrhhModel.insertEmployeetype = (employeetypeData, callback) => {
 
 rrhhModel.updateEmployeetype = (employeetypeData, callback) => {
 	if (connection) {
-		const sql = `
-			UPDATE employeetype SET
-			initials = ${connection.escape(employeetypeData.initials)},
-			description = ${connection.escape(employeetypeData.description)}
-			WHERE id =  ${connection.escape(employeetypeData.id)}
-			`;
-		connection.query(sql, (err, rows) => {
-			if (err) {
-				throw err;
+		let sql = `SELECT * FROM employeetype WHERE id = ${connection.escape(employeetypeData.id)}`;
+		connection.query(sql, (err, row) => {
+			if (row[0] != null) {
+				let sql = `
+				UPDATE employeetype SET
+				initials = ${connection.escape(employeetypeData.initials)},
+				description = ${connection.escape(employeetypeData.description)}
+				WHERE id =  ${connection.escape(employeetypeData.id)}
+				`;
+				connection.query(sql, (err, rows) => {
+					if (err) {
+						throw err;
+					} else {
+						callback(null, {
+							'msj': "actualizado"
+						});
+					}
+				})
 			} else {
 				callback(null, {
-					'msj': "success"
-				});
+					'msj': "no existe"
+				})
 			}
 		})
 	}
@@ -158,7 +182,7 @@ rrhhModel.deleteEmployeetype = (id, callback) => {
 			SELECT * FROM employeetype WHERE id = ${connection.escape(id)}
 		`;
 		connection.query(sql, (err, row) => {
-			if (row) {				//CUANDO BORRO UN ID QUE NO EXISTE, INFORMA QUE LO BORRÓ, CORREGIR
+			if (row[0] != null) {
 				let sql = `
 					DELETE FROM employeetype WHERE id = ${id}
 				`;
@@ -167,7 +191,7 @@ rrhhModel.deleteEmployeetype = (id, callback) => {
 						throw err;
 					} else {
 						callback(null, {
-							msj: "deleted"
+							msj: "borrado"
 						})
 					}
 				})
@@ -177,6 +201,27 @@ rrhhModel.deleteEmployeetype = (id, callback) => {
 				})
 			}
 		});
+	}
+};
+
+rrhhModel.getEmployeetypeByInitials = (employeetypeData, callback) => {
+	if (connection) {
+		let sql = `SELECT * FROM employeetype WHERE initials = ${connection.escape(employeetypeData.initials)}`;
+		connection.query(sql, (err, rows) => {
+			if (err) {
+				throw err;
+			} else {
+				if (rows[0] == null){
+					callback(null, {
+						'existe': false
+					});
+				} else {
+					callback(null, {
+						'existe': true
+					});
+				}
+			}
+		})
 	}
 };
 

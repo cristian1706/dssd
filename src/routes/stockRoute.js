@@ -57,19 +57,21 @@ module.exports = function(app) {
 
 	app.delete('/producttype/:id', (req, res) => {
 		stockModel.deleteProducttype(req.params.id, (err, data) => {
-			if (data && data.msj === 'deleted') {
+			if (data && data.msj == 'borrado') {
 				res.json({
 					success: true,
 					msj: "Tipo de producto eliminado",
 					data: data
 				})
 			} else {
-				if (data.msj === 'no existe') {
+				if (data.msj == 'no existe') {
 					res.status(404).json({
+						success: false,
 						msj: "No existe ese id en la bd"
 					})
 				} else {
 					res.status(500).json({
+						success: false,
 						msj: "Error al borrar"
 					})
 				}
@@ -88,7 +90,7 @@ module.exports = function(app) {
 	});
 
 	app.post('/product', (req, res) => {
-		const productData = { //NO SE PUEDE INSERTAR POR UN PROBLEMA CON LA CLAVE FORANEA DE PRODUCTTYPE
+		const productData = {
 			id: null,
 			name: req.body.name,
 			costprice: req.body.costprice,
@@ -138,19 +140,21 @@ module.exports = function(app) {
 
 	app.delete('/product/:id', (req, res) => {
 		stockModel.deleteProduct(req.params.id, (err, data) => {
-			if (data && data.msj === 'deleted') {
+			if (data && data.msj == 'borrado') {
 				res.json({
 					success: true,
 					msj: "Producto eliminado",
 					data: data
 				})
 			} else {
-				if (data.msj === 'no existe') {
+				if (data.msj == 'no existe') {
 					res.status(404).json({
+						success: false,
 						msj: "No existe ese id en la bd"
 					})
 				} else {
 					res.status(500).json({
+						success: false,
 						msj: "Error al borrar"
 					})
 				}
