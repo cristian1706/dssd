@@ -19,17 +19,26 @@ module.exports = function(app) {
 			password: req.body.password,
 			employeetype: req.body.employeetype
 		};
-		rrhhModel.insertEmployee(employeeData, (err, data) => {
-			if (data && data.id_insertado) {
-				res.json({
-					success: true,
-					msj: "Empleado insertado",
-					data: data
-				})
+		rrhhModel.getEmployeeByEmail(employeeData, (err, data) => {
+			if (data.msj === true) {
+				rrhhModel.insertEmployee(employeeData, (err, data) => {
+					if (data && data.id_insertado) {
+						res.json({
+							success: true,
+							msj: "Empleado insertado",
+							data: data
+						})
+					} else {
+						res.status(500).json({
+							success: false,
+							msj: "Error al insertar"
+						})
+					}
+				});
 			} else {
-				res.status(500).json({
+				res.status(550).json({
 					success: false,
-					msj: "Error"
+					msj: "El email ya existe en la BD"
 				})
 			}
 		});
@@ -54,7 +63,7 @@ module.exports = function(app) {
 			} else {
 				res.json({
 					success: false,
-					msj: "Error"
+					msj: "Error al actualizar"
 				})
 			}
 
@@ -76,7 +85,7 @@ module.exports = function(app) {
 					})
 				} else {
 					res.status(500).json({
-						msj: "Error"
+						msj: "Error al borrar"
 					})
 				}
 			}
@@ -109,7 +118,7 @@ module.exports = function(app) {
 			} else {
 				res.status(500).json({
 					success: false,
-					msj: "Error"
+					msj: "Error al insertar"
 				})
 			}
 		});
@@ -131,7 +140,7 @@ module.exports = function(app) {
 			} else {
 				res.json({
 					success: false,
-					msj: "Error"
+					msj: "Error al actualizar"
 				})
 			}
 
@@ -153,7 +162,7 @@ module.exports = function(app) {
 					})
 				} else {
 					res.status(500).json({
-						msj: "Error"
+						msj: "Error al borrar"
 					})
 				}
 			}

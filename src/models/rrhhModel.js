@@ -46,8 +46,8 @@ rrhhModel.updateEmployee = (employeeData, callback) => {
 			surname = ${connection.escape(employeeData.surname)},
 			email = ${connection.escape(employeeData.email)},
 			password = ${connection.escape(employeeData.password)},
-			employeetype = ${connection.escape(employeeData.employeetype)},
-			WHERE id =  ${connection.escape(employeeData.id)}
+			employeetype = ${connection.escape(employeeData.employeetype)}
+			WHERE id = ${connection.escape(employeeData.id)}
 			`;
 		connection.query(sql, (err, rows) => {
 			if (err) {
@@ -82,10 +82,25 @@ rrhhModel.deleteEmployee = (id, callback) => {
 				})
 			} else {
 				callback(null, {
-					msj: "no existe"
+					'msj': "no existe"
 				})
 			}
 		});
+	}
+};
+
+rrhhModel.getEmployeeByEmail = (employeeData, callback) => {
+	if (connection) {
+		let sql = `SELECT * FROM employee WHERE email = ${connection.escape(employeeData.email)}`;
+		connection.query(sql, (err, rows) => {
+			if (err) {
+				throw err;
+			} else {
+				callback(null, {
+					'existe': true
+				});
+			}
+		})
 	}
 };
 
@@ -158,7 +173,7 @@ rrhhModel.deleteEmployeetype = (id, callback) => {
 				})
 			} else {
 				callback(null, {
-					msj: "no existe"
+					'msj': "no existe"
 				})
 			}
 		});

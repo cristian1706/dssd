@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "email-existence": "^0.1.6",
     "express": "^4.16.3",
     "morgan": "^1.9.1"
   }

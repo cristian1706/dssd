@@ -26,7 +26,7 @@ module.exports = function(app) {
 			} else {
 				res.status(500).json({
 					success: false,
-					msj: "Error"
+					msj: "Error al insertar"
 				})
 			}
 		});
@@ -48,7 +48,7 @@ module.exports = function(app) {
 			} else {
 				res.json({
 					success: false,
-					msj: "Error"
+					msj: "Error al actualizar"
 				})
 			}
 
@@ -70,7 +70,7 @@ module.exports = function(app) {
 					})
 				} else {
 					res.status(500).json({
-						msj: "Error"
+						msj: "Error al borrar"
 					})
 				}
 			}
@@ -105,7 +105,7 @@ module.exports = function(app) {
 			} else {
 				res.status(500).json({
 					success: false,
-					msj: "Error"
+					msj: "Error al insertar"
 				})
 			}
 		});
@@ -129,7 +129,7 @@ module.exports = function(app) {
 			} else {
 				res.json({
 					success: false,
-					msj: "Error"
+					msj: "Error al actualizar"
 				})
 			}
 
@@ -151,7 +151,7 @@ module.exports = function(app) {
 					})
 				} else {
 					res.status(500).json({
-						msj: "Error"
+						msj: "Error al borrar"
 					})
 				}
 			}

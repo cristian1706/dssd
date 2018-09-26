@@ -79,7 +79,7 @@ stockModel.deleteProducttype = (id, callback) => {
 				})
 			} else {
 				callback(null, {
-					msj: "no existe"
+					'msj': "no existe"
 				})
 			}
 		});
@@ -121,7 +121,7 @@ stockModel.updateProduct = (productData, callback) => {
 			name = ${connection.escape(productData.name)},
 			costprice = ${connection.escape(productData.costprice)},
 			saleprice = ${connection.escape(productData.saleprice)},
-			producttype = ${connection.escape(productData.producttype)},
+			producttype = ${connection.escape(productData.producttype)}
 			WHERE id =  ${connection.escape(productData.id)}
 			`;
 		connection.query(sql, (err, rows) => {
@@ -157,7 +157,7 @@ stockModel.deleteProduct = (id, callback) => {
 				})
 			} else {
 				callback(null, {
-					msj: "no existe"
+					'msj': "no existe"
 				})
 			}
 		});
