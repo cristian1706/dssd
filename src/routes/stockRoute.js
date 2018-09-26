@@ -2,86 +2,7 @@ const stockModel = require('../models/stockModel.js');
 
 module.exports = function(app) {
 	
-	/* ----------------------------------- API DE PRODUCTTYPE -----------------------------------*/
-
-	app.get('/producttype', (req, res) => {
-		stockModel.getProducttypes((err, data) => {
-			res.status(200).json(data);
-		});
-	});
-
-	app.post('/producttype', (req, res) => {
-		const producttypeData = {
-			id: null,
-			initials: req.body.initials,
-			description: req.body.description
-		};
-		stockModel.insertProducttype(producttypeData, (err, data) => {
-			if (data && data.id_insertado) {
-				res.json({
-					success: true,
-					msj: "Tipo de producto insertado",
-					data: data
-				})
-			} else {
-				res.status(500).json({
-					success: false,
-					msj: "Error al insertar"
-				})
-			}
-		});
-	});
-
-	app.put('/producttype/:id', (req, res) => {
-		const producttypeData = {
-			id: req.params.id,
-			initials: req.body.initials,
-			description: req.body.description
-		};
-		stockModel.updateProducttype(producttypeData, (err, data) => {
-			if (data && data.msj) {
-				res.json({
-					success: true,
-					msj: "Tipo de producto actualizado",
-					data: data
-				})
-			} else {
-				res.json({
-					success: false,
-					msj: "Error al actualizar"
-				})
-			}
-
-		});
-	});
-
-	app.delete('/producttype/:id', (req, res) => {
-		stockModel.deleteProducttype(req.params.id, (err, data) => {
-			if (data && data.msj == 'borrado') {
-				res.json({
-					success: true,
-					msj: "Tipo de producto eliminado",
-					data: data
-				})
-			} else {
-				if (data.msj == 'no existe') {
-					res.status(404).json({
-						success: false,
-						msj: "No existe ese id en la bd"
-					})
-				} else {
-					res.status(500).json({
-						success: false,
-						msj: "Error al borrar"
-					})
-				}
-			}
-		});
-	});
-
-
 	/* ----------------------------------- API DE PRODUCT -----------------------------------*/
-
 
 	app.get('/product', (req, res) => {
 		stockModel.getProducts((err, data) => {
@@ -97,17 +18,26 @@ module.exports = function(app) {
 			saleprice: req.body.saleprice,
 			producttype: req.body.producttype
 		};
-		stockModel.insertProduct(productData, (err, data) => {
-			if (data && data.id_insertado) {
-				res.json({
-					success: true,
-					msj: "Producto insertado",
-					data: data
-				})
+		stockModel.getProductByName(productData, (err, data) => {
+			if (data.existe == false) {
+				stockModel.insertProduct(productData, (err, data) => {
+					if (data && data.id_insertado) {
+						res.json({
+							success: true,
+							msj: "Producto insertado",
+							data: data
+						})
+					} else {
+						res.status(500).json({
+							success: false,
+							msj: "Error al insertar"
+						})
+					}
+				});
 			} else {
-				res.status(500).json({
+				res.status(550).json({
 					success: false,
-					msj: "Error al insertar"
+					msj: "El nombre de producto ya existe en la BD"
 				})
 			}
 		});
@@ -120,21 +50,34 @@ module.exports = function(app) {
 			costprice: req.body.costprice,
 			saleprice: req.body.saleprice,
 			producttype: req.body.producttype
+			
 		};
 		stockModel.updateProduct(productData, (err, data) => {
-			if (data && data.msj) {
+			if (data && data.msj == 'actualizado') {
 				res.json({
 					success: true,
-					msj: "Producto actualizado",
-					data: data
+					msj: `Producto ${req.params.id} actualizado`
 				})
 			} else {
-				res.json({
-					success: false,
-					msj: "Error al actualizar"
-				})
+				if (data.msj == 'no existe') {
+					res.status(404).json({
+						success: false,
+						msj: "No existe ese id en la bd"
+					})
+				} else {
+					if (data.msj == 'nombre ocupado') {
+						res.status(550).json({
+							success: false,
+							msj: "El nombre de producto ya existe en la BD"
+						}) 
+					} else {
+						res.status(500).json({
+							success: false,
+							msj: "Error al actualizar"
+						})
+					}
+				}
 			}
-
 		});
 	});
 
@@ -143,8 +86,7 @@ module.exports = function(app) {
 			if (data && data.msj == 'borrado') {
 				res.json({
 					success: true,
-					msj: "Producto eliminado",
-					data: data
+					msj: `Producto ${req.params.id} eliminado`,
 				})
 			} else {
 				if (data.msj == 'no existe') {
@@ -160,6 +102,107 @@ module.exports = function(app) {
 				}
 			}
 		});
-	});	
-}
+	});
+
+
+	/* ----------------------------------- API DE PRODUCTTYPE -----------------------------------*/
+
+
+	app.get('/producttype', (req, res) => {
+		stockModel.getProducttypes((err, data) => {
+			res.status(200).json(data);
+		});
+	});
+
+	app.post('/producttype', (req, res) => {
+		const producttypeData = {
+			id: null,
+			initials: req.body.initials,
+			description: req.body.description
+		};
+		stockModel.getproducttypeByInitials(producttypeData, (err, data) => {
+			if (data.existe == false) {
+				stockModel.insertProducttype(producttypeData, (err, data) => {
+					if (data && data.id_insertado) {
+						res.json({
+							success: true,
+							msj: "Tipo de producto insertado",
+							data: data
+						})
+					} else {
+						res.status(500).json({
+							success: false,
+							msj: "Error al insertar"
+						})
+					}
+				});
+			} else {
+				res.status(550).json({
+					success: false,
+					msj: "Las iniciales del tipo de producto ya existen en la BD"
+				})
+			}
+		});
+	});
+
+	app.put('/producttype/:id', (req, res) => {
+		const producttypeData = {
+			id: req.params.id,
+			initials: req.body.initials,
+			description: req.body.description
+		};
+		stockModel.updateProducttype(producttypeData, (err, data) => {
+			if (data && data.msj == 'actualizado') {
+				res.json({
+					success: true,
+					msj: `Tipo de producto ${req.params.id} actualizado`
+				})
+			} else {
+				if (data.msj == 'no existe') {
+					res.status(404).json({
+						success: false,
+						msj: "No existe ese id en la bd"
+					})
+				} else {
+					if (data.msj == 'iniciales ocupadas') {
+						res.status(550).json({
+							success: false,
+							msj: "Las iniciales del tipo de producto ya existen en la BD"
+						}) 
+					} else {
+						res.status(500).json({
+							success: false,
+							msj: "Error al actualizar"
+						})
+					}
+				}
+			}
+		});
+	});
+
+	app.delete('/producttype/:id', (req, res) => {
+		stockModel.deleteProducttype(req.params.id, (err, data) => {
+			if (data && data.msj == 'borrado') {
+				res.json({
+					success: true,
+					msj: `Tipo de producto ${req.params.id} eliminado`,
+				})
+			} else {
+				if (data.msj == 'no existe') {
+					res.status(404).json({
+						success: false,
+						msj: "No existe ese id en la bd"
+					})
+				} else {
+					res.status(500).json({
+						success: false,
+						msj: "Error al borrar"
+					})
+				}
+			}
+		});
+	});
+
+	
+};
 
