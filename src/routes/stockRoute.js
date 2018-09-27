@@ -120,7 +120,7 @@ module.exports = function(app) {
 			initials: req.body.initials,
 			description: req.body.description
 		};
-		stockModel.getproducttypeByInitials(producttypeData, (err, data) => {
+		stockModel.getProducttypeByInitials(producttypeData, (err, data) => {
 			if (data.existe == false) {
 				stockModel.insertProducttype(producttypeData, (err, data) => {
 					if (data && data.id_insertado) {

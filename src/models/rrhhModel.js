@@ -43,7 +43,7 @@ rrhhModel.updateEmployee = (employeeData, callback) => {
 		let sql = `SELECT * FROM employee WHERE id = ${connection.escape(employeeData.id)}`;
 		connection.query(sql, (err, row) => {
 			if (row[0] != null) {
-				rrhhModel.getEmployeeByEmail(employeeData, (err, data) => {
+				rrhhModel.getEmployeeByEmailAndId(employeeData, (err, data) => {
 					if (data.existe == false) {
 						let sql = `
 						UPDATE employee SET
@@ -127,6 +127,28 @@ rrhhModel.getEmployeeByEmail = (employeeData, callback) => {
 	}
 };
 
+rrhhModel.getEmployeeByEmailAndId = (employeeData, callback) => {
+	if (connection) {
+		let sql = `SELECT * FROM employee WHERE email = ${connection.escape(employeeData.email)}
+		AND id <> ${connection.escape(employeeData.id)}`;
+		connection.query(sql, (err, rows) => {
+			if (err) {
+				throw err;
+			} else {
+				if (rows[0] == null){
+					callback(null, {
+						'existe': false
+					});
+				} else {
+					callback(null, {
+						'existe': true
+					});
+				}
+			}
+		})
+	}
+};
+
 /* ----------------------------------- MODELO DE EMPLOYEETYPE ------------------------------------*/
 
 
@@ -161,7 +183,7 @@ rrhhModel.updateEmployeetype = (employeetypeData, callback) => {
 		let sql = `SELECT * FROM employeetype WHERE id = ${connection.escape(employeetypeData.id)}`;
 		connection.query(sql, (err, row) => {
 			if (row[0] != null) {
-				rrhhModel.getEmployeetypeByInitials(employeetypeData, (err, data) => {
+				rrhhModel.getEmployeetypeByInitialsAndId(employeetypeData, (err, data) => {
 					if (data.existe == false) {
 						let sql = `
 						UPDATE employeetype SET
@@ -224,6 +246,28 @@ rrhhModel.deleteEmployeetype = (id, callback) => {
 rrhhModel.getEmployeetypeByInitials = (employeetypeData, callback) => {
 	if (connection) {
 		let sql = `SELECT * FROM employeetype WHERE initials = ${connection.escape(employeetypeData.initials)}`;
+		connection.query(sql, (err, rows) => {
+			if (err) {
+				throw err;
+			} else {
+				if (rows[0] == null){
+					callback(null, {
+						'existe': false
+					});
+				} else {
+					callback(null, {
+						'existe': true
+					});
+				}
+			}
+		})
+	}
+};
+
+rrhhModel.getEmployeetypeByInitialsAndId = (employeetypeData, callback) => {
+	if (connection) {
+		let sql = `SELECT * FROM employeetype WHERE initials = ${connection.escape(employeetypeData.initials)}
+		AND id <> ${connection.escape(employeetypeData.id)}`;
 		connection.query(sql, (err, rows) => {
 			if (err) {
 				throw err;
