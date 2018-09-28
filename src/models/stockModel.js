@@ -43,7 +43,7 @@ stockModel.updateProduct = (productData, callback) => {
 		let sql = `SELECT * FROM product WHERE id = ${connection.escape(productData.id)}`;
 		connection.query(sql, (err, row) => {
 			if (row[0] != null) {
-				stockModel.getProductByNameAndId(productData, (err, data) => {
+				stockModel.checkIfNameExist(productData, (err, data) => {
 					if (data.existe == false) {
 						let sql = `
 						UPDATE product SET
@@ -105,7 +105,7 @@ stockModel.deleteProduct = (id, callback) => {
 	}
 };
 
-stockModel.getProductByNameAndId = (productData, callback) => {
+stockModel.checkIfNameExist = (productData, callback) => {
 	if (connection) {
 		let sql = `
 		SELECT * FROM product WHERE name = ${connection.escape(productData.name)}
@@ -142,7 +142,8 @@ stockModel.getProductByName = (productData, callback) => {
 					});
 				} else {
 					callback(null, {
-						'existe': true
+						'existe': true,
+						'row': rows
 					});
 				}
 			}
@@ -184,7 +185,7 @@ stockModel.updateProducttype = (producttypeData, callback) => {
 		let sql = `SELECT * FROM producttype WHERE id = ${connection.escape(producttypeData.id)}`;
 		connection.query(sql, (err, row) => {
 			if (row[0] != null) {
-				stockModel.getProducttypeByInitialsById(producttypeData, (err, data) => {
+				stockModel.checkIfInitialsExist(producttypeData, (err, data) => {
 					if (data.existe == false) {
 						let sql = `
 						UPDATE producttype SET
@@ -231,7 +232,7 @@ stockModel.deleteProducttype = (id, callback) => {
 						throw err;
 					} else {
 						callback(null, {
-							msj: "borrado"
+							'msj': "borrado"
 						})
 					}
 				})
@@ -258,7 +259,8 @@ stockModel.getProducttypeByInitials = (producttypeData, callback) => {
 					});
 				} else {
 					callback(null, {
-						'existe': true
+						'existe': true,
+						'row': rows
 					});
 				}
 			}
@@ -266,7 +268,7 @@ stockModel.getProducttypeByInitials = (producttypeData, callback) => {
 	}
 };
 
-stockModel.getProducttypeByInitialsAndId = (producttypeData, callback) => {
+stockModel.checkIfInitialsExist = (producttypeData, callback) => {
 	if (connection) {
 		let sql = `
 		SELECT * FROM producttype WHERE initials = ${connection.escape(producttypeData.initials)}

@@ -43,7 +43,7 @@ rrhhModel.updateEmployee = (employeeData, callback) => {
 		let sql = `SELECT * FROM employee WHERE id = ${connection.escape(employeeData.id)}`;
 		connection.query(sql, (err, row) => {
 			if (row[0] != null) {
-				rrhhModel.getEmployeeByEmailAndId(employeeData, (err, data) => {
+				rrhhModel.checkIfEmailExist(employeeData, (err, data) => {
 					if (data.existe == false) {
 						let sql = `
 						UPDATE employee SET
@@ -93,7 +93,7 @@ rrhhModel.deleteEmployee = (id, callback) => {
 						throw err;
 					} else {
 						callback(null, {
-							msj: "borrado"
+							'msj': "borrado"
 						})
 					}
 				})
@@ -119,7 +119,8 @@ rrhhModel.getEmployeeByEmail = (employeeData, callback) => {
 					});
 				} else {
 					callback(null, {
-						'existe': true
+						'existe': true,
+						'row': rows
 					});
 				}
 			}
@@ -127,7 +128,7 @@ rrhhModel.getEmployeeByEmail = (employeeData, callback) => {
 	}
 };
 
-rrhhModel.getEmployeeByEmailAndId = (employeeData, callback) => {
+rrhhModel.checkIfEmailExist = (employeeData, callback) => {
 	if (connection) {
 		let sql = `SELECT * FROM employee WHERE email = ${connection.escape(employeeData.email)}
 		AND id <> ${connection.escape(employeeData.id)}`;
@@ -183,7 +184,7 @@ rrhhModel.updateEmployeetype = (employeetypeData, callback) => {
 		let sql = `SELECT * FROM employeetype WHERE id = ${connection.escape(employeetypeData.id)}`;
 		connection.query(sql, (err, row) => {
 			if (row[0] != null) {
-				rrhhModel.getEmployeetypeByInitialsAndId(employeetypeData, (err, data) => {
+				rrhhModel.checkIfInitialsExist(employeetypeData, (err, data) => {
 					if (data.existe == false) {
 						let sql = `
 						UPDATE employeetype SET
@@ -230,7 +231,7 @@ rrhhModel.deleteEmployeetype = (id, callback) => {
 						throw err;
 					} else {
 						callback(null, {
-							msj: "borrado"
+							'msj': "borrado"
 						})
 					}
 				})
@@ -256,7 +257,8 @@ rrhhModel.getEmployeetypeByInitials = (employeetypeData, callback) => {
 					});
 				} else {
 					callback(null, {
-						'existe': true
+						'existe': true,
+						'row': rows
 					});
 				}
 			}
@@ -264,7 +266,7 @@ rrhhModel.getEmployeetypeByInitials = (employeetypeData, callback) => {
 	}
 };
 
-rrhhModel.getEmployeetypeByInitialsAndId = (employeetypeData, callback) => {
+rrhhModel.checkIfInitialsExist = (employeetypeData, callback) => {
 	if (connection) {
 		let sql = `SELECT * FROM employeetype WHERE initials = ${connection.escape(employeetypeData.initials)}
 		AND id <> ${connection.escape(employeetypeData.id)}`;

@@ -10,6 +10,24 @@ module.exports = function(app) {
 		});
 	});
 
+	app.get('/employee/:email', (req, res) => {
+		const employeeData = {
+			email: req.params.email,
+		};
+		rrhhModel.getEmployeeByEmail(employeeData, (err, data) => {
+			if (data.existe == true) {
+				res.status(200).json({
+					data: data.row
+				})
+			} else {
+				res.status(404).json({
+					success: false,
+					msj: "No existe ese empleado en la BD"
+				})
+			}
+		});
+	});
+
 	app.post('/employee', (req, res) => {
 		const employeeData = {
 			id: null,
@@ -106,6 +124,7 @@ module.exports = function(app) {
 	});
 
 
+
 	/* ----------------------------------- API DE EMPLOYEETYPE -----------------------------------*/
 
 
@@ -115,35 +134,60 @@ module.exports = function(app) {
 		});
 	});
 
+	app.get('/employeetype/:initials', (req, res) => {
+		const employeetypeData = {
+			initials: req.params.initials,
+		};
+		rrhhModel.getEmployeetypeByInitials(employeetypeData, (err, data) => {
+			if (data.existe == true) {
+				res.status(200).json({
+					data: data.row
+				})
+			} else {
+				res.status(404).json({
+					success: false,
+					msj: "No existe ese tipo de empleado en la BD"
+				})
+			}
+		});
+	});
+
 	app.post('/employeetype', (req, res) => {
 		const employeetypeData = {
 			id: null,
 			initials: req.body.initials,
 			description: req.body.description
 		};
-		rrhhModel.getEmployeetypeByInitials(employeetypeData, (err, data) => {
-			if (data.existe == false) {
-				rrhhModel.insertEmployeetype(employeetypeData, (err, data) => {
-					if (data && data.id_insertado) {
-						res.json({
-							success: true,
-							msj: "Tipo de empleado insertado",
-							data: data
-						})
-					} else {
-						res.status(500).json({
-							success: false,
-							msj: "Error al insertar"
-						})
-					}
-				});
-			} else {
-				res.status(550).json({
-					success: false,
-					msj: "Las iniciales del tipo de empleado ya existen en la BD"
-				})
-			}
-		});
+		if (employeetypeData.initials.length <= 5) {
+			rrhhModel.getEmployeetypeByInitials(employeetypeData, (err, data) => {
+				if (data.existe == false) {
+					rrhhModel.insertEmployeetype(employeetypeData, (err, data) => {
+						if (data && data.id_insertado) {
+							res.json({
+								success: true,
+								msj: "Tipo de empleado insertado",
+								data: data
+							})
+						} else {
+							res.status(500).json({
+								success: false,
+								msj: "Error al insertar"
+							})
+						}
+					});
+				} else {
+					res.status(550).json({
+						success: false,
+						msj: "Las iniciales del tipo de empleado ya existen en la BD"
+					})
+				}
+			});
+		} else {
+			res.status(403).json({
+				success: false,
+				msj: "Las iniciales del tipo de empleado deben contener como maximo 5 caracteres"
+			})
+		}
 	});
 
 	app.put('/employeetype/:id', (req, res) => {
@@ -152,33 +196,40 @@ module.exports = function(app) {
 			initials: req.body.initials,
 			description: req.body.description
 		};
-		rrhhModel.updateEmployeetype(employeetypeData, (err, data) => {
-			if (data && data.msj == 'actualizado') {
-				res.json({
-					success: true,
-					msj: `Tipo de empleado ${req.params.id} actualizado`
-				})
-			} else {
-				if (data.msj == 'no existe') {
-					res.status(404).json({
-						success: false,
-						msj: "No existe ese id en la bd"
+		if (employeetypeData.initials.length <= 5) {
+			rrhhModel.updateEmployeetype(employeetypeData, (err, data) => {
+				if (data && data.msj == 'actualizado') {
+					res.json({
+						success: true,
+						msj: `Tipo de empleado ${req.params.id} actualizado`
 					})
 				} else {
-					if (data.msj == 'iniciales ocupadas') {
-						res.status(550).json({
+					if (data.msj == 'no existe') {
+						res.status(404).json({
 							success: false,
-							msj: "Las iniciales del tipo de empleado ya existen en la BD"
-						}) 
-					} else {
-						res.status(500).json({
-							success: false,
-							msj: "Error al actualizar"
+							msj: "No existe ese id en la bd"
 						})
+					} else {
+						if (data.msj == 'iniciales ocupadas') {
+							res.status(550).json({
+								success: false,
+								msj: "Las iniciales del tipo de empleado ya existen en la BD"
+							}) 
+						} else {
+							res.status(500).json({
+								success: false,
+								msj: "Error al actualizar"
+							})
+						}
 					}
 				}
-			}
-		});
+			});
+		} else {
+			res.status(403).json({
+				success: false,
+				msj: "Las iniciales del tipo de empleado deben contener como maximo 5 caracteres"
+			})
+		}
 	});
 
 	app.delete('/employeetype/:id', (req, res) => {
