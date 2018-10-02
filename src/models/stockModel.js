@@ -80,12 +80,12 @@ stockModel.updateProduct = (productData, callback) => {
 stockModel.deleteProduct = (id, callback) => {
 	if (connection) {
 		let sql = `
-			SELECT * FROM product WHERE id = ${connection.escape(id)}
+		SELECT * FROM product WHERE id = ${connection.escape(id)}
 		`;
 		connection.query(sql, (err, row) => {
 			if (row[0] != null) {
 				let sql = `
-					DELETE FROM product WHERE id = ${id}
+				DELETE FROM product WHERE id = ${id}
 				`;
 				connection.query(sql, (err, rows) => {
 					if (err) {
@@ -132,6 +132,28 @@ stockModel.getProductByName = (productData, callback) => {
 	if (connection) {
 		let sql = `
 		SELECT * FROM product WHERE name = ${connection.escape(productData.name)}`;
+		connection.query(sql, (err, rows) => {
+			if (err) {
+				throw err;
+			} else {
+				if (rows[0] == null){
+					callback(null, {
+						'existe': false
+					});
+				} else {
+					callback(null, {
+						'existe': true,
+						'row': rows
+					});
+				}
+			}
+		})
+	}
+};
+
+stockModel.getProductByProducttype = (id, callback) => {
+	if (connection) {
+		let sql = `SELECT * FROM product WHERE producttype = ${connection.escape(id)}`;
 		connection.query(sql, (err, rows) => {
 			if (err) {
 				throw err;
@@ -220,12 +242,12 @@ stockModel.updateProducttype = (producttypeData, callback) => {
 stockModel.deleteProducttype = (id, callback) => {
 	if (connection) {
 		let sql = `
-			SELECT * FROM producttype WHERE id = ${connection.escape(id)}
+		SELECT * FROM producttype WHERE id = ${connection.escape(id)}
 		`;
 		connection.query(sql, (err, row) => {
 			if (row[0] != null) {
 				let sql = `
-					DELETE FROM producttype WHERE id = ${id}
+				DELETE FROM producttype WHERE id = ${id}
 				`;
 				connection.query(sql, (err, rows) => {
 					if (err) {

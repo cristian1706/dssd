@@ -233,24 +233,33 @@ module.exports = function(app) {
 	});
 
 	app.delete('/employeetype/:id', (req, res) => {
-		rrhhModel.deleteEmployeetype(req.params.id, (err, data) => {
-			if (data && data.msj == 'borrado') {
-				res.status(200).json({
-					success: true,
-					msj: `Tipo de empleado ${req.params.id} eliminado`,
+		rrhhModel.getEmployeeByEmployeetype(req.params.id, (err, data) => {
+			if (data.existe == false) {
+				rrhhModel.deleteEmployeetype(req.params.id, (err, data) => {
+					if (data && data.msj == 'borrado') {
+						res.status(200).json({
+							success: true,
+							msj: `Tipo de empleado ${req.params.id} eliminado`,
+						})
+					} else {
+						if (data.msj == 'no existe') {
+							res.status(404).json({
+								success: false,
+								msj: "No existe ese id en la bd"
+							})
+						} else {
+							res.status(500).json({
+								success: false,
+								msj: "Error al borrar"
+							})
+						}
+					}
 				})
 			} else {
-				if (data.msj == 'no existe') {
-					res.status(404).json({
-						success: false,
-						msj: "No existe ese id en la bd"
-					})
-				} else {
-					res.status(500).json({
-						success: false,
-						msj: "Error al borrar"
-					})
-				}
+				res.status(403).json({
+					success: false,
+					msj: `El id ${req.params.id} esta asociado a un empleado, primero borra ese empleado o cambia su tipo de empleado por otro`
+				})
 			}
 		});
 	});

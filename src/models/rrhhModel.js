@@ -128,6 +128,28 @@ rrhhModel.getEmployeeByEmail = (employeeData, callback) => {
 	}
 };
 
+rrhhModel.getEmployeeByEmployeetype = (id, callback) => {
+	if (connection) {
+		let sql = `SELECT * FROM employee WHERE employeetype = ${connection.escape(id)}`;
+		connection.query(sql, (err, rows) => {
+			if (err) {
+				throw err;
+			} else {
+				if (rows[0] == null){
+					callback(null, {
+						'existe': false
+					});
+				} else {
+					callback(null, {
+						'existe': true,
+						'row': rows
+					});
+				}
+			}
+		})
+	}
+};
+
 rrhhModel.checkIfEmailExist = (employeeData, callback) => {
 	if (connection) {
 		let sql = `SELECT * FROM employee WHERE email = ${connection.escape(employeeData.email)}

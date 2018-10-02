@@ -231,26 +231,35 @@ module.exports = function(app) {
 	});
 
 	app.delete('/producttype/:id', (req, res) => {
-		stockModel.deleteProducttype(req.params.id, (err, data) => {
-			if (data && data.msj == 'borrado') {
-				res.json({
-					success: true,
-					msj: `Tipo de producto ${req.params.id} eliminado`,
-				})
+		stockModel.getProductByProducttype(req.params.id, (err, data) => {
+			if (data.existe == false) {
+				stockModel.deleteProducttype(req.params.id, (err, data) => {
+					if (data && data.msj == 'borrado') {
+						res.json({
+							success: true,
+							msj: `Tipo de producto ${req.params.id} eliminado`,
+						})
+					} else {
+						if (data.msj == 'no existe') {
+							res.status(404).json({
+								success: false,
+								msj: "No existe ese id en la bd"
+							})
+						} else {
+							res.status(500).json({
+								success: false,
+								msj: "Error al borrar"
+							})
+						}
+					}
+				});
 			} else {
-				if (data.msj == 'no existe') {
-					res.status(404).json({
-						success: false,
-						msj: "No existe ese id en la bd"
-					})
-				} else {
-					res.status(500).json({
-						success: false,
-						msj: "Error al borrar"
-					})
-				}
+				res.status(403).json({
+					success: false,
+					msj: `El id ${req.params.id} esta asociado a un producto, primero borra ese producto o cambia su tipo de producto por otro`
+				})
 			}
-		});
+		})
 	});
 
 	
