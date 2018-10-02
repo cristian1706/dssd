@@ -73,7 +73,7 @@ module.exports = function(app) {
 		};
 		rrhhModel.updateEmployee(employeeData, (err, data) => {
 			if (data && data.msj == 'actualizado') {
-				res.json({
+				res.status(200).json({
 					success: true,
 					msj: `Empleado ${req.params.id} actualizado`
 				})
@@ -103,7 +103,7 @@ module.exports = function(app) {
 	app.delete('/employee/:id', (req, res) => {
 		rrhhModel.deleteEmployee(req.params.id, (err, data) => {
 			if (data && data.msj == 'borrado') {
-				res.json({
+				res.status(200).json({
 					success: true,
 					msj: `Empleado ${req.params.id} eliminado`,
 				})
@@ -163,7 +163,7 @@ module.exports = function(app) {
 				if (data.existe == false) {
 					rrhhModel.insertEmployeetype(employeetypeData, (err, data) => {
 						if (data && data.id_insertado) {
-							res.json({
+							res.status(200).json({
 								success: true,
 								msj: "Tipo de empleado insertado",
 								data: data
@@ -199,7 +199,7 @@ module.exports = function(app) {
 		if (employeetypeData.initials.length <= 5) {
 			rrhhModel.updateEmployeetype(employeetypeData, (err, data) => {
 				if (data && data.msj == 'actualizado') {
-					res.json({
+					res.status(200).json({
 						success: true,
 						msj: `Tipo de empleado ${req.params.id} actualizado`
 					})
@@ -235,7 +235,7 @@ module.exports = function(app) {
 	app.delete('/employeetype/:id', (req, res) => {
 		rrhhModel.deleteEmployeetype(req.params.id, (err, data) => {
 			if (data && data.msj == 'borrado') {
-				res.json({
+				res.status(200).json({
 					success: true,
 					msj: `Tipo de empleado ${req.params.id} eliminado`,
 				})
