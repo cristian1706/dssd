@@ -288,6 +288,28 @@ rrhhModel.getEmployeetypeByInitials = (employeetypeData, callback) => {
 	}
 };
 
+rrhhModel.getEmployeetypeById = (id, callback) => {
+	if (connection) {
+		let sql = `SELECT * FROM employeetype WHERE id = ${connection.escape(id)}`;
+		connection.query(sql, (err, rows) => {
+			if (err) {
+				throw err;
+			} else {
+				if (rows[0] == null){
+					callback(null, {
+						'existe': false
+					});
+				} else {
+					callback(null, {
+						'existe': true,
+						'row': rows
+					});
+				}
+			}
+		})
+	}
+};
+
 rrhhModel.checkIfInitialsExist = (employeetypeData, callback) => {
 	if (connection) {
 		let sql = `SELECT * FROM employeetype WHERE initials = ${connection.escape(employeetypeData.initials)}

@@ -37,26 +37,35 @@ module.exports = function(app) {
 			password: req.body.password,
 			employeetype: req.body.employeetype
 		};
-		rrhhModel.getEmployeeByEmail(employeeData, (err, data) => {
-			if (data.existe == false) {
-				rrhhModel.insertEmployee(employeeData, (err, data) => {
-					if (data && data.id_insertado) {
-						res.json({
-							success: true,
-							msj: "Empleado insertado",
-							data: data
-						})
+		rrhhModel.getEmployeetypeById(req.body.employeetype, (err, data) => {
+			if (data.existe == true) {
+				rrhhModel.getEmployeeByEmail(employeeData, (err, data) => {
+					if (data.existe == false) {
+						rrhhModel.insertEmployee(employeeData, (err, data) => {
+							if (data && data.id_insertado) {
+								res.json({
+									success: true,
+									msj: "Empleado insertado",
+									data: data
+								})
+							} else {
+								res.status(500).json({
+									success: false,
+									msj: "Error al insertar"
+								})
+							}
+						});
 					} else {
-						res.status(500).json({
+						res.status(550).json({
 							success: false,
-							msj: "Error al insertar"
+							msj: "El email ya existe en la BD"
 						})
 					}
 				});
 			} else {
-				res.status(550).json({
+				res.status(403).json({
 					success: false,
-					msj: "El email ya existe en la BD"
+					msj: `No existe el id ${req.body.employeetype} de ese tipo de empleado para ser asignado. Por favor, ingrese un tipo de empleado valido`
 				})
 			}
 		});
@@ -71,31 +80,40 @@ module.exports = function(app) {
 			password: req.body.password,
 			employeetype: req.body.employeetype
 		};
-		rrhhModel.updateEmployee(employeeData, (err, data) => {
-			if (data && data.msj == 'actualizado') {
-				res.status(200).json({
-					success: true,
-					msj: `Empleado ${req.params.id} actualizado`
-				})
-			} else {
-				if (data.msj == 'no existe') {
-					res.status(404).json({
-						success: false,
-						msj: "No existe ese id en la bd"
-					})
-				} else {
-					if (data.msj == 'email ocupado') {
-						res.status(550).json({
-							success: false,
-							msj: "El email ya existe en la BD"
-						}) 
-					} else {
-						res.status(500).json({
-							success: false,
-							msj: "Error al actualizar"
+		rrhhModel.getEmployeetypeById(req.body.employeetype, (err, data) => {
+			if (data.existe == true) {
+				rrhhModel.updateEmployee(employeeData, (err, data) => {
+					if (data && data.msj == 'actualizado') {
+						res.status(200).json({
+							success: true,
+							msj: `Empleado ${req.params.id} actualizado`
 						})
+					} else {
+						if (data.msj == 'no existe') {
+							res.status(404).json({
+								success: false,
+								msj: "No existe ese id en la bd"
+							})
+						} else {
+							if (data.msj == 'email ocupado') {
+								res.status(550).json({
+									success: false,
+									msj: "El email ya existe en la BD"
+								}) 
+							} else {
+								res.status(500).json({
+									success: false,
+									msj: "Error al actualizar"
+								})
+							}
+						}
 					}
-				}
+				});
+			} else {
+				res.status(403).json({
+					success: false,
+					msj: `No existe el id ${req.body.employeetype} de ese tipo de empleado para ser asignado. Por favor, ingrese un tipo de empleado valido`
+				})
 			}
 		});
 	});

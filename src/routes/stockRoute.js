@@ -36,26 +36,35 @@ module.exports = function(app) {
 			saleprice: req.body.saleprice,
 			producttype: req.body.producttype
 		};
-		stockModel.getProductByName(productData, (err, data) => {
-			if (data.existe == false) {
-				stockModel.insertProduct(productData, (err, data) => {
-					if (data && data.id_insertado) {
-						res.json({
-							success: true,
-							msj: "Producto insertado",
-							data: data
-						})
+		stockModel.getProducttypeById(req.body.producttype, (err, data) => {
+			if (data.existe == true) {
+				stockModel.getProductByName(productData, (err, data) => {
+					if (data.existe == false) {
+						stockModel.insertProduct(productData, (err, data) => {
+							if (data && data.id_insertado) {
+								res.json({
+									success: true,
+									msj: "Producto insertado",
+									data: data
+								})
+							} else {
+								res.status(500).json({
+									success: false,
+									msj: "Error al insertar"
+								})
+							}
+						});
 					} else {
-						res.status(500).json({
+						res.status(550).json({
 							success: false,
-							msj: "Error al insertar"
+							msj: "El nombre de producto ya existe en la BD"
 						})
 					}
 				});
 			} else {
-				res.status(550).json({
+				res.status(403).json({
 					success: false,
-					msj: "El nombre de producto ya existe en la BD"
+					msj: `No existe el id ${req.body.producttype} de ese tipo de producto para ser asignado. Por favor, ingrese un tipo de producto valido`
 				})
 			}
 		});
@@ -70,31 +79,40 @@ module.exports = function(app) {
 			producttype: req.body.producttype
 			
 		};
-		stockModel.updateProduct(productData, (err, data) => {
-			if (data && data.msj == 'actualizado') {
-				res.json({
-					success: true,
-					msj: `Producto ${req.params.id} actualizado`
-				})
-			} else {
-				if (data.msj == 'no existe') {
-					res.status(404).json({
-						success: false,
-						msj: "No existe ese id en la bd"
-					})
-				} else {
-					if (data.msj == 'nombre ocupado') {
-						res.status(550).json({
-							success: false,
-							msj: "El nombre de producto ya existe en la BD"
-						}) 
-					} else {
-						res.status(500).json({
-							success: false,
-							msj: "Error al actualizar"
+		stockModel.getProducttypeById(req.body.producttype, (err, data) => {
+			if (data.existe == true) {
+				stockModel.updateProduct(productData, (err, data) => {
+					if (data && data.msj == 'actualizado') {
+						res.json({
+							success: true,
+							msj: `Producto ${req.params.id} actualizado`
 						})
+					} else {
+						if (data.msj == 'no existe') {
+							res.status(404).json({
+								success: false,
+								msj: "No existe ese id en la bd"
+							})
+						} else {
+							if (data.msj == 'nombre ocupado') {
+								res.status(550).json({
+									success: false,
+									msj: "El nombre de producto ya existe en la BD"
+								}) 
+							} else {
+								res.status(500).json({
+									success: false,
+									msj: "Error al actualizar"
+								})
+							}
+						}
 					}
-				}
+				});
+			} else {
+				res.status(403).json({
+					success: false,
+					msj: `No existe el id ${req.body.producttype} de ese tipo de producto para ser asignado. Por favor, ingrese un tipo de producto valido`
+				})
 			}
 		});
 	});

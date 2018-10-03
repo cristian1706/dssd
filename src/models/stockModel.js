@@ -290,6 +290,28 @@ stockModel.getProducttypeByInitials = (producttypeData, callback) => {
 	}
 };
 
+stockModel.getProducttypeById = (id, callback) => {
+	if (connection) {
+		let sql = `SELECT * FROM producttype WHERE id = ${connection.escape(id)}`;
+		connection.query(sql, (err, rows) => {
+			if (err) {
+				throw err;
+			} else {
+				if (rows[0] == null){
+					callback(null, {
+						'existe': false
+					});
+				} else {
+					callback(null, {
+						'existe': true,
+						'row': rows
+					});
+				}
+			}
+		})
+	}
+};
+
 stockModel.checkIfInitialsExist = (producttypeData, callback) => {
 	if (connection) {
 		let sql = `
