@@ -3,11 +3,13 @@ var app = express();
 
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
+var partialResponse = require('express-partial-response');
 
 
 //middlewares
 app.use(bodyParser.json());
 app.use(morgan('dev'));
+app.use(partialResponse());
 
 //routes
 require('./routes/stockRoute.js')(app);

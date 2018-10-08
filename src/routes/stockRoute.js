@@ -5,16 +5,24 @@ module.exports = function(app) {
 	/* ----------------------------------- API DE PRODUCT -----------------------------------*/
 
 	app.get('/product', (req, res) => {
+		let name = req.query.name;
+		let costprice = req.query.costprice;
+		let saleprice = req.query.saleprice;
+		let producttype = req.query.producttype;
 		stockModel.getProducts((err, data) => {
-			res.status(200).json(data);
+			const response = data.filter(c => {
+				return (name ? (c.name === name) : true) &&
+				(costprice ? (c.costprice == costprice) : true) &&
+				(saleprice ? (c.saleprice == saleprice) : true) &&
+				(producttype ? (c.producttype == producttype) : true);
+			});
+			res.status(200).json(response);
 		});
 	});
 
-	app.get('/product/:name', (req, res) => {
-		const productData = {
-			name: req.params.name,
-		};
-		stockModel.getProductByName(productData, (err, data) => {
+	app.get('/product/:id', (req, res) => {
+		let id = req.params.id;
+		stockModel.getProductById(id, (err, data) => {
 			if (data.existe == true) {
 				res.status(200).json({
 					data: data.row
@@ -145,16 +153,18 @@ module.exports = function(app) {
 
 
 	app.get('/producttype', (req, res) => {
+		let initials = req.query.initials;
 		stockModel.getProducttypes((err, data) => {
-			res.status(200).json(data);
+			const response = data.filter(c => {
+				return (initials ? (c.initials === initials) : true);
+			});
+			res.status(200).json(response);
 		});
 	});
 
-	app.get('/producttype/:initials', (req, res) => {
-		const producttypeData = {
-			initials: req.params.initials,
-		};
-		stockModel.getProducttypeByInitials(producttypeData, (err, data) => {
+	app.get('/producttype/:id', (req, res) => {
+		let id = req.params.id;
+		stockModel.getProducttypeById(id, (err, data) => {
 			if (data.existe == true) {
 				res.status(200).json({
 					data: data.row

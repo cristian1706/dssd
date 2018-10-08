@@ -5,16 +5,26 @@ module.exports = function(app) {
 	/* ----------------------------------- API DE EMPLOYEE -----------------------------------*/
 
 	app.get('/employee', (req, res) => {
+		let firstname = req.query.firstname;
+		let surname = req.query.surname;
+		let email = req.query.email;
+		let password = req.query.password;
+		let employeetype = req.query.employeetype;
 		rrhhModel.getEmployees((err, data) => {
-			res.status(200).json(data);
+			const response = data.filter(c => {
+				return (firstname ? (c.firstname === firstname) : true) &&
+				(surname ? (c.surname === surname) : true) &&
+				(email ? (c.email === email) : true) &&
+				(password ? (c.password === password) : true) &&
+				(employeetype ? (c.employeetype == employeetype) : true);
+			});
+			res.status(200).json(response);
 		});
 	});
 
-	app.get('/employee/:email', (req, res) => {
-		const employeeData = {
-			email: req.params.email,
-		};
-		rrhhModel.getEmployeeByEmail(employeeData, (err, data) => {
+	app.get('/employee/:id', (req, res) => {
+		let id = req.params.id;
+		rrhhModel.getEmployeeById(id, (err, data) => {
 			if (data.existe == true) {
 				res.status(200).json({
 					data: data.row
@@ -147,16 +157,18 @@ module.exports = function(app) {
 
 
 	app.get('/employeetype', (req, res) => {
+		let initials = req.query.initials;
 		rrhhModel.getEmployeetypes((err, data) => {
-			res.status(200).json(data);
+			const response = data.filter(c => {
+				return (initials ? (c.initials === initials) : true);
+			});
+			res.status(200).json(response);
 		});
 	});
 
-	app.get('/employeetype/:initials', (req, res) => {
-		const employeetypeData = {
-			initials: req.params.initials,
-		};
-		rrhhModel.getEmployeetypeByInitials(employeetypeData, (err, data) => {
+	app.get('/employeetype/:id', (req, res) => {
+		let id = req.params.id;
+		rrhhModel.getEmployeetypeById(id, (err, data) => {
 			if (data.existe == true) {
 				res.status(200).json({
 					data: data.row

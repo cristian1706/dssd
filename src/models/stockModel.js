@@ -173,6 +173,28 @@ stockModel.getProductByProducttype = (id, callback) => {
 	}
 };
 
+stockModel.getProductById = (id, callback) => {
+	if (connection) {
+		let sql = `SELECT * FROM product WHERE id = ${connection.escape(id)}`;
+		connection.query(sql, (err, rows) => {
+			if (err) {
+				throw err;
+			} else {
+				if (rows[0] == null){
+					callback(null, {
+						'existe': false
+					});
+				} else {
+					callback(null, {
+						'existe': true,
+						'row': rows
+					});
+				}
+			}
+		})
+	}
+};
+
 /* ----------------------------------- MODELO DE PRODUCTTYPE ------------------------------------*/
 
 
