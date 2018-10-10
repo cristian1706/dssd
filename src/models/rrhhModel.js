@@ -7,7 +7,6 @@ var mysql      = require('mysql');
 // 	database: "rrhh"
 // });
 
-
 var connection = mysql.createConnection({
 	host     : 'us-cdbr-iron-east-01.cleardb.net',
 	user     : 'b9236afe17fd4f',
