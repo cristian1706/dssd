@@ -1,11 +1,11 @@
 var mysql      = require('mysql');
 
-// var connection = mysql.createConnection({
+// var db_config = {
 // 	host     : 'localhost',
 // 	user     : 'root',
 // 	password : '1234',
 // 	database: "coupon"
-// });
+// };
 
 var db_config = {
 	host     : 'us-cdbr-iron-east-01.cleardb.net',
@@ -22,7 +22,7 @@ function handleDisconnect() {
 	connection.connect(function(err) {
 		if(err) {
 			console.log('error when connecting to db:', err);
-			setTimeout(handleDisconnect, 2000);
+			setTimeout(handleDisconnect, 10000);
 		}
 	});
 
