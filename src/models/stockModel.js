@@ -1,18 +1,18 @@
 var mysql      = require('mysql');
 
-// var db_config = {
-// 	host     : 'localhost',
-// 	user     : 'root',
-// 	password : '1234',
-// 	database: "stock"
-// };
-
 var db_config = {
-	host     : 'us-cdbr-iron-east-01.cleardb.net',
-	user     : 'b9236afe17fd4f',
-	password : 'b4e79f55',
-	database : "heroku_da2f4d77e00d340"
+	host     : 'localhost',
+	user     : 'root',
+	password : '1234',
+	database: "stock"
 };
+
+// var db_config = {
+// 	host     : 'us-cdbr-iron-east-01.cleardb.net',
+// 	user     : 'bf594d14cc0415',
+// 	password : 'c44ea089',
+// 	database : "gcp_b5009f6f961b73a32817"
+// };
 
 var connection;
 
