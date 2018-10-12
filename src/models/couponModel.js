@@ -43,7 +43,90 @@ let couponModel = {};
 
 /* ----------------------------------- MODELO DE CUPÓN ------------------------------------*/
 
+couponModel.getAllCoupons = (callback) => {
+	if (connection) {
+		connection.query("SELECT * FROM coupon ORDER BY id", (err, rows) => {
+			if (err) {
+				throw err;
+			} else {
+				callback(null, rows);
+			}
+		})
+	}
+};
 
+couponModel.getCouponByNumber = (number, callback) => {
+	if (connection) {
+		let sql = `SELECT * FROM coupon WHERE number = ${connection.escape(number)}`;
+		connection.query(sql, (err, rows) => {
+			if (err) {
+				throw err;
+			} else {
+				if (rows[0] == null) {
+					callback(null, {
+						'existe': false
+					});
+				} else {
+					callback(null, {
+						'existe': true,
+						'row': rows
+					});
+				}
+			}
+		})
+	}
+};
+
+couponModel.getCouponsByDates = (initialDate, finalDate, callback) => {
+	if (connection) {
+		let sql = `SELECT * FROM coupon WHERE initial_date <= ${connection.escape(initialDate)} AND final_date >= ${connection.escape(finalDate)}`;
+		connection.query(sql, (err, rows) => {
+			if (err) {
+				throw err;
+			} else {
+				if (rows[0] == null) {
+					callback(null, {
+						'existe': false
+					});
+				} else {
+					callback(null, {
+						'existe': true,
+						'row': rows
+					});
+				}
+			}
+		})
+	}
+};
+
+couponModel.insertCoupon = (couponBody, callback) => {
+  if (connection) {
+		connection.query("INSERT INTO coupon SET ?", couponBody, (err, row) => {
+			if (err) {
+				throw err;
+			} else {
+				callback(null, {
+					'id_insertado': row.insertId
+				});
+			}
+		})
+	}
+}
+
+couponModel.useCoupon = (number, callback) => {
+  if (connection) {
+    let sql = (`UPDATE coupon SET used = 1 WHERE number = ${connection.escape(number)}`);
+    connection.query(sql, (err, data) => {
+        if (err) {
+          throw err;
+        } else {
+          callback(null, {
+            'msj': "actualizado"
+          });
+        }
+      })
+  }
+}
 
 
 
