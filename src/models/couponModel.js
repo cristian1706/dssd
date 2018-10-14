@@ -4,7 +4,7 @@ var db_config = {
 	host     : 'localhost',
 	user     : 'root',
 	password : '1234',
-	database: "coupon"
+	database: "coupons"
 };
 
 // var db_config = {
@@ -43,7 +43,7 @@ let couponModel = {};
 
 /* ----------------------------------- MODELO DE CUPÓN ------------------------------------*/
 
-couponModel.getAllCoupons = (callback) => {
+couponModel.getCoupons = (callback) => {
 	if (connection) {
 		connection.query("SELECT * FROM coupon ORDER BY id", (err, rows) => {
 			if (err) {
@@ -55,9 +55,9 @@ couponModel.getAllCoupons = (callback) => {
 	}
 };
 
-couponModel.getCouponByNumber = (number, callback) => {
+couponModel.getCouponByid = (id, callback) => {
 	if (connection) {
-		let sql = `SELECT * FROM coupon WHERE number = ${connection.escape(number)}`;
+		let sql = `SELECT * FROM coupon WHERE id = ${connection.escape(id)}`;
 		connection.query(sql, (err, rows) => {
 			if (err) {
 				throw err;
@@ -77,9 +77,32 @@ couponModel.getCouponByNumber = (number, callback) => {
 	}
 };
 
-couponModel.getCouponsByDates = (initialDate, finalDate, callback) => {
+couponModel.getCouponByNumber = (couponNumber, callback) => {
 	if (connection) {
-		let sql = `SELECT * FROM coupon WHERE initial_date <= ${connection.escape(initialDate)} AND final_date >= ${connection.escape(finalDate)}`;
+		let sql = `
+		SELECT * FROM coupon WHERE number = ${connection.escape(couponNumber)}`;
+		connection.query(sql, (err, rows) => {
+			if (err) {
+				throw err;
+			} else {
+				if (rows[0] == null){
+					callback(null, {
+						'existe': false
+					});
+				} else {
+					callback(null, {
+						'existe': true,
+						'row': rows
+					});
+				}
+			}
+		})
+	}
+};
+
+couponModel.getCouponByDate = (initial_date, callback) => {
+	if (connection) {
+		let sql = `SELECT * FROM coupon WHERE initial_date = ${connection.escape(initial_dDate)}`;
 		connection.query(sql, (err, rows) => {
 			if (err) {
 				throw err;
@@ -100,7 +123,7 @@ couponModel.getCouponsByDates = (initialDate, finalDate, callback) => {
 };
 
 couponModel.insertCoupon = (couponBody, callback) => {
-  if (connection) {
+	if (connection) {
 		connection.query("INSERT INTO coupon SET ?", couponBody, (err, row) => {
 			if (err) {
 				throw err;
@@ -111,38 +134,133 @@ couponModel.insertCoupon = (couponBody, callback) => {
 			}
 		})
 	}
-}
+};
 
-couponModel.useCoupon = (number, callback) => {
-  if (connection) {
-    let sql = (`UPDATE coupon SET used = 1 WHERE number = ${connection.escape(number)}`);
-    connection.query(sql, (err, data) => {
-        if (err) {
-          throw err;
-        } else {
-          callback(null, {
-            'msj': "actualizado"
-          });
-        }
-      })
-  }
-}
+couponModel.updateCoupon = (couponData, callback) => {
+	if (connection) {
+		let sql = `SELECT * FROM coupon WHERE id = ${connection.escape(couponData.id)}`;
+		connection.query(sql, (err, row) => {
+			if (row[0] != null) {
+				couponModel.checkIfNumberExist(couponData, (err, data) => {
+					if (data.existe == false) {
+						let sql = `
+						UPDATE coupon SET
+						number = ${connection.escape(couponData.number)},
+						initial_date = ${connection.escape(couponData.initial_date)},
+						discount = ${connection.escape(couponData.discount)}
+						WHERE id =  ${connection.escape(couponData.id)}
+						`;
+						connection.query(sql, (err, rows) => {
+							if (err) {
+								throw err;
+							} else {
+								callback(null, {
+									'msj': "actualizado"
+								});
+							}
+						})
+					} else {
+						callback(null, {
+							'msj': "numero ocupado"
+						});
+					}
+				});
+			} else {
+				callback(null, {
+					'msj': "no existe"
+				})
+			}
+		})
+	}
+};
 
+couponModel.useCoupon = (id, callback) => {
+	if (connection) {
+		let sql = (`UPDATE coupon SET used = 1 WHERE id = ${connection.escape(id)}`);
+		connection.query(sql, (err, data) => {
+			if (err) {
+				throw err;
+			} else {
+				callback(null, {
+					'msj': "actualizado"
+				});
+			}
+		})
+	}
+};
 
+couponModel.deleteCoupon = (id, callback) => {
+	if (connection) {
+		let sql = `
+		SELECT * FROM coupon WHERE id = ${connection.escape(id)}
+		`;
+		connection.query(sql, (err, row) => {
+			if (row[0] != null) {
+				let sql = `
+				DELETE FROM coupon WHERE id = ${id}
+				`;
+				connection.query(sql, (err, rows) => {
+					if (err) {
+						throw err;
+					} else {
+						callback(null, {
+							msj: "borrado"
+						})
+					}
+				})
+			} else {
+				callback(null, {
+					'msj': "no existe"
+				})
+			}
+		});
+	}
+};
 
+couponModel.checkIfNumberExist = (couponData, callback) => {
+	if (connection) {
+		let sql = `
+		SELECT * FROM coupon WHERE number = ${connection.escape(couponData.number)}
+		AND id <> ${connection.escape(couponData.id)}`;
+		connection.query(sql, (err, rows) => {
+			if (err) {
+				throw err;
+			} else {
+				if (rows[0] == null){
+					callback(null, {
+						'existe': false
+					});
+				} else {
+					callback(null, {
+						'existe': true
+					});
+				}
+			}
+		})
+	}
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
+couponModel.checkIfCouponAlreadyUsed = (id, callback) => {
+	if (connection) {
+		let sql = `
+		SELECT * FROM coupon WHERE used = 1 AND id = ${connection.escape(id)}`;
+		connection.query(sql, (err, rows) => {
+			if (err) {
+				throw err;
+			} else {
+				if (rows[0] == null){
+					callback(null, {
+						'usado': false
+					});
+				} else {
+					callback(null, {
+						'usado': true
+					});
+				}
+			}
+		})
+	}
+};
 
 
 
