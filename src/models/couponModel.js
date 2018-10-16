@@ -4,7 +4,7 @@ var db_config = {
 	host     : 'localhost',
 	user     : 'root',
 	password : '1234',
-	database: "coupon"
+	database: "coupons"
 };
 
 // var db_config = {

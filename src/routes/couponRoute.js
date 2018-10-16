@@ -11,11 +11,11 @@ module.exports = function(app) {
 		let discount = req.query.discount;
 		couponModel.getCoupons((err,data) => {
 			const response = data.filter(c => {
-				return (number ? (c.number === number) : true) &&
-				(used ? (c.used === used) : true) &&
-				(initial_date ? (c.initial_date === initial_date) : true) &&
-				(final_date ? (c.final_date === final_date) : true) &&
-				(discount ? (c.discount === discount) : true);
+				return (number ? (c.number == number) : true) &&
+				(used ? (c.used = used) : true) &&
+				(initial_date ? (c.initial_date == initial_date) : true) &&
+				(final_date ? (c.final_date == final_date) : true) &&
+				(discount ? (c.discount == discount) : true);
 			});
 			res.status(200).json(response);
 		})
