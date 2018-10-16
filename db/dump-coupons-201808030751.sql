@@ -27,6 +27,7 @@ CREATE TABLE `coupon` (
   `number` int(11) NOT NULL,
   `used` bit(1) NOT NULL,
   `initial_date` date NOT NULL,
+  `final_date` date NOT NULL,
   `discount` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

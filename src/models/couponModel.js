@@ -100,9 +100,10 @@ couponModel.getCouponByNumber = (couponNumber, callback) => {
 	}
 };
 
-couponModel.getCouponByDate = (initial_date, callback) => {
+couponModel.getCouponByDates = (initial_date, final_date, callback) => {
 	if (connection) {
-		let sql = `SELECT * FROM coupon WHERE initial_date = ${connection.escape(initial_dDate)}`;
+		let sql = `SELECT * FROM coupon WHERE initial_date <= ${connection.escape(initial_date)}
+		AND final_date >= ${connection.escape(final_date)}`;
 		connection.query(sql, (err, rows) => {
 			if (err) {
 				throw err;
@@ -147,6 +148,7 @@ couponModel.updateCoupon = (couponData, callback) => {
 						UPDATE coupon SET
 						number = ${connection.escape(couponData.number)},
 						initial_date = ${connection.escape(couponData.initial_date)},
+						final_date = ${connection.escape(couponData.final_date)},
 						discount = ${connection.escape(couponData.discount)}
 						WHERE id =  ${connection.escape(couponData.id)}
 						`;
