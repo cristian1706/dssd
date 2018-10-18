@@ -226,6 +226,7 @@ stockModel.getProductById = (id, callback) => {
 		})
 	}
 };
+
 /*
 * calculateDiscountFromSalePrice calcula la diferencia entre el
 * precio de venta y precio de compra, donde si supera el margen
@@ -235,18 +236,17 @@ stockModel.getProductById = (id, callback) => {
 */
 let calculateDiscountFromSalePrice = (productSalePrice, productCostPrice) => {
   //margin guarda el 10% del costo del producto (productCostPrice)
-  let margin = productCostPrice * 0.1;
-  let difference = productSalePrice - productCostPrice;
-  if ( difference > margin ) {
-    //surplus = excendente (google translate)
-    let surplus = difference - margin;
-
+  let margen = productCostPrice * 0.1;
+  let diferencia = productSalePrice - productCostPrice;
+  if ( diferencia > margen ) {
+  	let excendente = diferencia - margen;
+    
     //80% del excedente
-    surplus = surplus * 0.8;
-
-    //le resto al saleprice el surplus calculado (80% de la diferencia del 10%)
-    return productSalePrice - surplus;
-  }
+    excedente = excedente * 0.8;
+    
+    //le resto al saleprice el excedente calculado (80% de la diferencia del 10%)
+    return productSalePrice - excedente;
+}
 };
 
 
