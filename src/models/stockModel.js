@@ -247,6 +247,9 @@ let calculateDiscountFromSalePrice = (productSalePrice, productCostPrice) => {
     //le resto al saleprice el surplus calculado (80% de la diferencia del 10%)
     return productSalePrice - surplus;
   }
+  else {
+    return productSalePrice
+  }
 };
 
 
