@@ -7,13 +7,15 @@ module.exports = function(app) {
 		let number = req.query.number;
 		let used = req.query.used;
 		let initial_date = req.query.initial_date;
+		let final_date = req.query.final_date;
 		let discount = req.query.discount;
 		couponModel.getCoupons((err,data) => {
 			const response = data.filter(c => {
-				return (number ? (c.number === number) : true) &&
-				(used ? (c.used === used) : true) &&
-				(initial_date ? (c.initial_date === initial_date) : true) &&
-				(discount ? (c.discount === discount) : true);
+				return (number ? (c.number == number) : true) &&
+				(used ? (c.used = used) : true) &&
+				(initial_date ? (c.initial_date == initial_date) : true) &&
+				(final_date ? (c.final_date == final_date) : true) &&
+				(discount ? (c.discount == discount) : true);
 			});
 			res.status(200).json(response);
 		})
@@ -41,6 +43,7 @@ module.exports = function(app) {
 			number: req.body.number,
 			used: false,
 			initial_date: req.body.initial_date,
+			final_date: req.body.final_date,
 			discount: req.body.discount
 		};
 		couponModel.getCouponByNumber(req.body.number, (err,data) => {
@@ -73,6 +76,7 @@ module.exports = function(app) {
 			id: req.params.id,
 			number: req.body.number,
 			initial_date: req.body.initial_date,
+			final_date: req.body.final_date
 			discount: req.body.discount
 		};
 		couponModel.updateCoupon(couponData, (err, data) => {
