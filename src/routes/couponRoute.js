@@ -76,7 +76,7 @@ module.exports = function(app) {
 			id: req.params.id,
 			number: req.body.number,
 			initial_date: req.body.initial_date,
-			final_date: req.body.final_date
+			final_date: req.body.final_date,
 			discount: req.body.discount
 		};
 		couponModel.updateCoupon(couponData, (err, data) => {
@@ -108,7 +108,7 @@ module.exports = function(app) {
 		});
 	});
 
-	app.put('/coupon/usar/:id', (req,res) => {
+	app.put('/coupon/use/:id', (req,res) => {
 		couponModel.getCouponByid(req.params.id, (err, data) => {
 			if (data.existe == true) {
 				couponModel.checkIfCouponAlreadyUsed(req.params.id, (err, data) => {
