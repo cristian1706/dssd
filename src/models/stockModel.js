@@ -234,20 +234,20 @@ stockModel.getProductById = (id, callback) => {
 *
 * @return integer
 */
-let calculateDiscountFromSalePrice = (productSalePrice, productCostPrice) => {
-	//margin guarda el 10% del costo del producto (productCostPrice)
-  	let margen = productCostPrice * 0.1;
-  	let diferencia = productSalePrice - productCostPrice;
-  	if ( diferencia > margen ) {
-  		let excendente = diferencia - margen;
+// let calculateDiscountFromSalePrice = (productSalePrice, productCostPrice) => {
+// 	//margin guarda el 10% del costo del producto (productCostPrice)
+//   	let margen = productCostPrice * 0.1;
+//   	let diferencia = productSalePrice - productCostPrice;
+//   	if ( diferencia > margen ) {
+//   		let excendente = diferencia - margen;
     
-    	//80% del excedente
-    	excedente = excedente * 0.8;
+//     	//80% del excedente
+//     	excedente = excedente * 0.8;
     
-    	//le resto al saleprice el excedente calculado (80% de la diferencia del 10%)
-    	return productSalePrice - excedente;
-	}
-};
+//     	//le resto al saleprice el excedente calculado (80% de la diferencia del 10%)
+//     	return productSalePrice - excedente;
+// 	}
+// };
 
 
 
