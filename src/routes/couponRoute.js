@@ -43,7 +43,7 @@ module.exports = function(app) {
 			number: req.body.number,
 			used: false,
 			initial_date: req.body.initial_date,
-			final_date: req.body.final_date,
+			final_date: null,
 			discount: req.body.discount
 		};
 		couponModel.getCouponByNumber(req.body.number, (err,data) => {
