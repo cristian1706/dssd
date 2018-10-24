@@ -7,13 +7,6 @@ var db_config = {
 	database: "stock"
 };
 
-// var db_config = {
-// 	host     : 'us-cdbr-iron-east-01.cleardb.net',
-// 	user     : 'bf594d14cc0415',
-// 	password : 'c44ea089',
-// 	database : "gcp_b5009f6f961b73a32817"
-// };
-
 var connection;
 
 function handleDisconnect() {

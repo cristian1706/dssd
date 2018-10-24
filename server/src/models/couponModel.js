@@ -1,18 +1,18 @@
 var mysql      = require('mysql');
 
-var db_config = {
-	host     : 'localhost',
-	user     : 'root',
-	password : '1234',
-	database: 'coupons'
-};
-
 // var db_config = {
-// 	host     : 'us-cdbr-iron-east-01.cleardb.net',
-// 	user     : 'b60adfc4f9b112',
-// 	password : '4b9ce5de',
-// 	database : "gcp_97d3f6e75da6abe1fc08"
+// 	host     : 'localhost',
+// 	user     : 'root',
+// 	password : '1234',
+// 	database: 'coupons'
 // };
+
+var db_config = {
+	host     : 'us-cdbr-iron-east-01.cleardb.net',
+	user     : 'b39fe06ad4a97a',
+	password : '994700a5',
+	database : 'heroku_c5951cf6ea04da9'
+};
 
 var connection;
 
