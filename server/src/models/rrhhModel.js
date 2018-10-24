@@ -55,6 +55,31 @@ rrhhModel.getEmployees = (callback) => {
 	}
 };
 
+rrhhModel.authenticateEmployee = (email, password, callback) => {
+	if (connection) {
+		let sql = `SELECT id, email, password FROM employee WHERE email = ${connection.escape(email)}
+					AND password = ${connection.escape(password)}`;
+		connection.query(sql, (err, row) => {
+			if (err) {
+				throw err;
+			} else {
+				if (row[0] == null){
+					callback(null, {
+						'existe': false
+					});
+				} else {
+					callback(null, {
+						'existe': true,
+						'id': row[0].id,
+						'email': row[0].email,
+						'password': row[0].password 
+					});
+				}
+			}
+		})
+	}
+};
+
 rrhhModel.insertEmployee = (employeeData, callback) => {
 	if (connection) {
 		connection.query("INSERT INTO employee SET ?", employeeData, (err, rows) => {

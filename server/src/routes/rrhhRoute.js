@@ -1,4 +1,5 @@
 const rrhhModel = require('../models/rrhhModel.js');
+var jwt = require('jsonwebtoken');
 
 module.exports = function(app) {
 	
@@ -38,46 +39,79 @@ module.exports = function(app) {
 		});
 	});
 
-	app.post('/employee', (req, res) => {
-		const employeeData = {
-			id: null,
-			firstname: req.body.firstname,
-			surname: req.body.surname,
-			email: req.body.email,
-			password: req.body.password,
-			employeetype: req.body.employeetype
-		};
-		rrhhModel.getEmployeetypeById(req.body.employeetype, (err, data) => {
+	app.post('/employee/login', (req, res) => {
+		let email = req.body.email;
+		let password = req.body.password;
+		rrhhModel.authenticateEmployee(email, password, (err, data) => {
 			if (data.existe == true) {
-				rrhhModel.getEmployeeByEmail(employeeData, (err, data) => {
-					if (data.existe == false) {
-						rrhhModel.insertEmployee(employeeData, (err, data) => {
-							if (data && data.id_insertado) {
-								res.json({
-									success: true,
-									msj: "Empleado insertado",
-									data: data
-								})
+				const user = {
+					id: data.id,
+					email: data.email,
+					password: data.password
+				}
+				jwt.sign({user}, 'ultrasecretkey', {expiresIn: 18000}, (err, token) => { //60x5
+					res.status(200).json({
+						token: token
+					});	
+				});
+			} else {
+				res.status(404).json({
+					success: false,
+					msj: "El email o la password no son correctos"
+				})
+			}
+		});
+	});
+
+	app.post('/employee', verifyToken, (req, res) => {
+		jwt.verify(req.token, 'ultrasecretkey', (err, authData) => {
+			if (err) {
+				res.status(403).json({
+					success: false,
+					msj: "Error de autenticación"
+				});
+			} else {
+				const employeeData = {
+					id: null,
+					firstname: req.body.firstname,
+					surname: req.body.surname,
+					email: req.body.email,
+					password: req.body.password,
+					employeetype: req.body.employeetype
+				};
+				rrhhModel.getEmployeetypeById(req.body.employeetype, (err, data) => {
+					if (data.existe == true) {
+						rrhhModel.getEmployeeByEmail(employeeData, (err, data) => {
+							if (data.existe == false) {
+								rrhhModel.insertEmployee(employeeData, (err, data) => {
+									if (data && data.id_insertado) {
+										res.json({
+											success: true,
+											msj: "Empleado insertado",
+											data: data
+										})
+									} else {
+										res.status(500).json({
+											success: false,
+											msj: "Error al insertar"
+										})
+									}
+								});
 							} else {
-								res.status(500).json({
+								res.status(550).json({
 									success: false,
-									msj: "Error al insertar"
+									msj: "El email ya existe en la BD"
 								})
 							}
 						});
 					} else {
-						res.status(550).json({
+						res.status(403).json({
 							success: false,
-							msj: "El email ya existe en la BD"
+							msj: `No existe el id ${req.body.employeetype} de ese tipo de empleado para ser asignado. Por favor, ingrese un tipo de empleado valido`
 						})
 					}
 				});
-			} else {
-				res.status(403).json({
-					success: false,
-					msj: `No existe el id ${req.body.employeetype} de ese tipo de empleado para ser asignado. Por favor, ingrese un tipo de empleado valido`
-				})
-			}
+			};
 		});
 	});
 
@@ -295,4 +329,24 @@ module.exports = function(app) {
 	});
 
 
+};
+
+//FUNCTIONS
+
+/*Format of token:
+* Authorization: Bearer <acces_token>
+*/
+function verifyToken(req, res, next) {
+	//Get auth header value
+	const bearerHeader = req.headers['authorization'];
+	//Check if bearer is undefined
+	if (typeof bearerHeader !== 'undefined') {
+		//Set the token
+		req.token = bearerHeader;
+		//Next middleware
+		next();
+	} else {
+		//Forbidden
+		res.sendStatus(403);
+	}
 };
