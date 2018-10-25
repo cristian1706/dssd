@@ -25,9 +25,9 @@ DROP TABLE IF EXISTS `coupon`;
 CREATE TABLE `coupon` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `number` int(11) NOT NULL,
-  `used` bit(1) NOT NULL,
-  `initial_date` date NOT NULL,
-  `final_date` date NOT NULL,
+  `used` int(1) NOT NULL,
+  `initial_date` varchar(30) NOT NULL,
+  `final_date` varchar(30) NOT NULL,
   `discount` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
