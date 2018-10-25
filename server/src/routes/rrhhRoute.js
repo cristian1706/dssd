@@ -415,11 +415,11 @@ module.exports = function(app) {
 //FUNCTIONS
 
 /*Format of token:
-* Authorization: Bearer <acces_token>
+* Authorization: <acces_token>
 */
 function verifyToken(req, res, next) {
 	//Get auth header value
-	const bearerHeader = req.headers['authorization'];
+	const bearerHeader = req.headers['Authorization'];
 	//Check if bearer is undefined
 	if (typeof bearerHeader !== 'undefined') {
 		//Set the token
@@ -428,6 +428,8 @@ function verifyToken(req, res, next) {
 		next();
 	} else {
 		//Forbidden
-		res.sendStatus(403);
+		res.status(403).json({
+			msj: "Error de autenticación"
+		});
 	}
 };

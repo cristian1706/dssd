@@ -50,7 +50,7 @@ module.exports = function(app) {
 						})
 					}
 				});
-			}:
+			};
 		});
 	});
 
@@ -157,7 +157,7 @@ module.exports = function(app) {
 						})
 					}
 				});
-			}:
+			};
 		});
 	});
 
@@ -380,6 +380,28 @@ module.exports = function(app) {
 		});
 	});
 
-	
+};
+
+
+//FUNCTIONS
+
+/*Format of token:
+* Authorization: <acces_token>
+*/
+function verifyToken(req, res, next) {
+	//Get auth header value
+	const bearerHeader = req.headers['Authorization'];
+	//Check if bearer is undefined
+	if (typeof bearerHeader !== 'undefined') {
+		//Set the token
+		req.token = bearerHeader;
+		//Next middleware
+		next();
+	} else {
+		//Forbidden
+		res.status(403).json({
+			msj: "Error de autenticación"
+		});
+	}
 };
 
