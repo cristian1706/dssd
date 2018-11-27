@@ -1,0 +1,6 @@
+<div *ngIf="product">
+  <h1>Producto: {{ product.name }}</h1>
+  <h2> precio: ${{ product.saleprice }} </h2>
+  <button (click)="getCoupon()">Ingresar cupón</button><br><br>
+  <button (click)="goBack()">Cancelar</button>
+</div>

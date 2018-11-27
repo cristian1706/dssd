@@ -4,64 +4,41 @@ module.exports = function(app) {
 	
 	/* ----------------------------------- API DE PRODUCT -----------------------------------*/
 
-	app.get('/product', verifyToken, (req, res) => {
-		jwt.verify(req.token, 'ultrasecretkey', (err, authData) => {
-			if (err) {
-				res.status(403).json({
-					success: false,
-					msj: "Error de autenticación"
-				});
-			} else {
-				let name = req.query.name;
-				let costprice = req.query.costprice;
-				let saleprice = req.query.saleprice;
-				let producttype = req.query.producttype;
-				stockModel.getProducts((err, data) => {
-					const response = data.filter(c => {
-						return (name ? (c.name === name) : true) &&
-						(costprice ? (c.costprice == costprice) : true) &&
-						(saleprice ? (c.saleprice == saleprice) : true) &&
-						(producttype ? (c.producttype == producttype) : true);
-					});
-					res.status(200).json(response);
-				});
-			};
+	app.get('/product', (req, res) => {
+		let name = req.query.name;
+		let costprice = req.query.costprice;
+		let saleprice = req.query.saleprice;
+		let producttype = req.query.producttype;
+		stockModel.getProducts((err, data) => {
+			const response = data.filter(c => {
+				return (name ? (c.name === name) : true) &&
+				(costprice ? (c.costprice == costprice) : true) &&
+				(saleprice ? (c.saleprice == saleprice) : true) &&
+				(producttype ? (c.producttype == producttype) : true);
+			});
+			res.status(200).json(response);
 		});
 	});
 
-	app.get('/product/:id', verifyToken, (req, res) => {
-		jwt.verify(req.token, 'ultrasecretkey', (err, authData) => {
-			if (err) {
-				res.status(403).json({
-					success: false,
-					msj: "Error de autenticación"
-				});
+	app.get('/product/:id', (req, res) => {
+		let id = req.params.id;
+		stockModel.getProductById(id, (err, data) => {
+			if (data.existe == true) {
+				res.status(200).json({
+					data: data.row
+				})
 			} else {
-				let id = req.params.id;
-				stockModel.getProductById(id, (err, data) => {
-					if (data.existe == true) {
-						res.status(200).json({
-							data: data.row
-						})
-					} else {
-						res.status(404).json({
-							success: false,
-							msj: "No existe ese producto en la BD"
-						})
-					}
-				});
-			};
+				res.status(404).json({
+					success: false,
+					msj: "No existe ese producto en la BD"
+				})
+			}
 		});
+
 	});
 
-	app.post('/product', verifyToken, (req, res) => {
-		jwt.verify(req.token, 'ultrasecretkey', (err, authData) => {
-			if (err) {
-				res.status(403).json({
-					success: false,
-					msj: "Error de autenticación"
-				});
-			} else {
+	app.post('/product', (req, res) => {
+		
 				const productData = {
 					id: null,
 					name: req.body.name,
@@ -101,18 +78,11 @@ module.exports = function(app) {
 						})
 					}
 				});
-			};
-		});
+			
 	});
 
-	app.put('/product/:id', verifyToken, (req, res) => {
-		jwt.verify(req.token, 'ultrasecretkey', (err, authData) => {
-			if (err) {
-				res.status(403).json({
-					success: false,
-					msj: "Error de autenticación"
-				});
-			} else {
+	app.put('/product/:id', (req, res) => {
+		
 				const productData = {
 					id: req.params.id,
 					name: req.body.name,
@@ -157,18 +127,11 @@ module.exports = function(app) {
 						})
 					}
 				});
-			};
-		});
+			
 	});
 
-	app.delete('/product/:id', verifyToken, (req, res) => {
-		jwt.verify(req.token, 'ultrasecretkey', (err, authData) => {
-			if (err) {
-				res.status(403).json({
-					success: false,
-					msj: "Error de autenticación"
-				});
-			} else {
+	app.delete('/product/:id', (req, res) => {
+		
 				stockModel.deleteProduct(req.params.id, (err, data) => {
 					if (data && data.msj == 'borrado') {
 						res.json({
@@ -189,22 +152,15 @@ module.exports = function(app) {
 						}
 					}
 				});
-			};
-		});
+			
 	});
 
 
 	/* ----------------------------------- API DE PRODUCTTYPE -----------------------------------*/
 
 
-	app.get('/producttype', verifyToken, (req, res) => {
-		jwt.verify(req.token, 'ultrasecretkey', (err, authData) => {
-			if (err) {
-				res.status(403).json({
-					success: false,
-					msj: "Error de autenticación"
-				});
-			} else {
+	app.get('/producttype', (req, res) => {
+		
 				let initials = req.query.initials;
 				stockModel.getProducttypes((err, data) => {
 					const response = data.filter(c => {
@@ -212,18 +168,11 @@ module.exports = function(app) {
 					});
 					res.status(200).json(response);
 				});
-			};
-		});
+			
 	});
 
-	app.get('/producttype/:id', verifyToken, (req, res) => {
-		jwt.verify(req.token, 'ultrasecretkey', (err, authData) => {
-			if (err) {
-				res.status(403).json({
-					success: false,
-					msj: "Error de autenticación"
-				});
-			} else {
+	app.get('/producttype/:id', (req, res) => {
+		
 				let id = req.params.id;
 				stockModel.getProducttypeById(id, (err, data) => {
 					if (data.existe == true) {
@@ -237,18 +186,11 @@ module.exports = function(app) {
 						})
 					}
 				});
-			};
-		});
+			
 	});
 
-	app.post('/producttype', verifyToken, (req, res) => {
-		jwt.verify(req.token, 'ultrasecretkey', (err, authData) => {
-			if (err) {
-				res.status(403).json({
-					success: false,
-					msj: "Error de autenticación"
-				});
-			} else {
+	app.post('/producttype', (req, res) => {
+		
 				const producttypeData = {
 					id: null,
 					initials: req.body.initials,
@@ -284,18 +226,11 @@ module.exports = function(app) {
 						msj: "Las iniciales del tipo de producto deben contener como maximo 5 caracteres"
 					})
 				}
-			};
-		});
+			
 	});
 
-	app.put('/producttype/:id', verifyToken, (req, res) => {
-		jwt.verify(req.token, 'ultrasecretkey', (err, authData) => {
-			if (err) {
-				res.status(403).json({
-					success: false,
-					msj: "Error de autenticación"
-				});
-			} else {
+	app.put('/producttype/:id', (req, res) => {
+		
 				const producttypeData = {
 					id: req.params.id,
 					initials: req.body.initials,
@@ -335,18 +270,11 @@ module.exports = function(app) {
 						msj: "Las iniciales del tipo de producto deben contener como maximo 5 caracteres"
 					})
 				}
-			};
-		});
+			
 	});
 
-	app.delete('/producttype/:id', verifyToken, (req, res) => {
-		jwt.verify(req.token, 'ultrasecretkey', (err, authData) => {
-			if (err) {
-				res.status(403).json({
-					success: false,
-					msj: "Error de autenticación"
-				});
-			} else {
+	app.delete('/producttype/:id', (req, res) => {
+		
 				stockModel.getProductByProducttype(req.params.id, (err, data) => {
 					if (data.existe == false) {
 						stockModel.deleteProducttype(req.params.id, (err, data) => {
@@ -376,8 +304,7 @@ module.exports = function(app) {
 						})
 					}
 				})
-			};
-		});
+			
 	});
 
 };

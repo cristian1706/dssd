@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductsService } from '../services/productService/products.service'
-
+import { ProductsService } from '../services/productService/products.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
@@ -8,16 +8,22 @@ import { ProductsService } from '../services/productService/products.service'
 })
 export class ProductsComponent implements OnInit {
   products: any;
-  displayedColumns: string[] = ['name', 'saleprice'];
 
-  constructor(private productsService: ProductsService) { }
+  constructor(private productsService: ProductsService,
+    private router: Router) { }
 
   ngOnInit() {
     this.getAllProducts().subscribe(data => {
       this.products = data;
     });
   }
+
   getAllProducts() {
     return this.productsService.getProducts();
   }
+
+  getProduct(idProduct: number) {
+    this.router.navigate(['products', idProduct]);
+  }
 }
+

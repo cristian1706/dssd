@@ -50,7 +50,7 @@ rrhhModel.getEmployees = (callback) => {
 
 rrhhModel.authenticateEmployee = (email, password, callback) => {
 	if (connection) {
-		let sql = `SELECT id, email, password FROM employee WHERE email = ${connection.escape(email)}
+		let sql = `SELECT id, email, password, employeetype FROM employee WHERE email = ${connection.escape(email)}
 					AND password = ${connection.escape(password)}`;
 		connection.query(sql, (err, row) => {
 			if (err) {
@@ -65,7 +65,8 @@ rrhhModel.authenticateEmployee = (email, password, callback) => {
 						'existe': true,
 						'id': row[0].id,
 						'email': row[0].email,
-						'password': row[0].password 
+						'password': row[0].password,
+						'employeetype': row[0].employeetype 
 					});
 				}
 			}

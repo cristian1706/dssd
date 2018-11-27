@@ -11,6 +11,12 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 app.use(partialResponse());
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 //routes
 require('./routes/stockRoute.js')(app);
 require('./routes/rrhhRoute.js')(app);
