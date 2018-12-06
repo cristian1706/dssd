@@ -1,6 +1,8 @@
-<div >
-<table>
-    <thead>
+<button *ngIf="!isEmployee()"(click)="login()">Iniciar Sesion</button>
+<button *ngIf="isEmployee()"(click)="logout()">Cerrar Sesion</button>
+<div class="container">
+  <table class="table table-hover table-striped">
+    <thead class="thead-light">
         <tr>
         <th>Producto</th>
        <th>Precio</th>
@@ -10,8 +12,10 @@
   <tbody *ngFor="let product of products"> 
     <tr>
       <td>{{ product.name }}</td>
-      <td>{{ product.saleprice }}</td>
-      <td><button (click)="getProduct(product.id)">Comprar</button></td>
+      <td *ngIf="!isEmployee()">{{ product.saleprice }}</td>
+      <td *ngIf="isEmployee()">{{ product.costprice }}</td>
+      <td><button class="btn-primary" (click)="getProduct(product.id)">Comprar</button></td>
+      
     </tr>
   </tbody>
 </table>

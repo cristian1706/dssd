@@ -42,7 +42,9 @@ export class LoginComponent implements OnInit {
     }
     authenticate(mail: string, pass: string) {
       this.productService.getUser(mail, pass).subscribe(
-          data => {
+          (data: any) => {
+              // save the employeetype in sessionStorage
+              sessionStorage.setItem('user', data.data.employeetype);
               this.router.navigate([this.returnUrl]);
           },
           error => {
