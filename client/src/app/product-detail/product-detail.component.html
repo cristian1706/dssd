@@ -2,8 +2,8 @@
 <div *ngIf="product">
   <div>
   <h1>Producto: {{ product.name }}</h1>
-  <h2 *ngIf="!isEmployee()"> precio: ${{ product.saleprice }} </h2>
-  <h2 *ngIf="isEmployee()"> precio: ${{ product.costprice }}</h2>
+  <h2 *ngIf="!isEmployee()"> precio: ${{ product.saleprice | number:'2.2-5' }} </h2>
+  <h2 *ngIf="isEmployee()"> precio: ${{ product.costprice | number:'2.2-5' }}</h2>
   <button *ngIf="!isEmployee()" (click)="getCoupon()">Ingresar cupón</button><br><br>
   <button (click)="goBack()" class="btn-danger">Cancelar compra</button><br><br>
   <button  (click)="buyProduct()" aria-label="Comprar Producto" class="btn-success">Comprar</button>

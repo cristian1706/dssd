@@ -28,7 +28,7 @@ export class ProductsComponent implements OnInit {
   }
 
   isEmployee(): boolean {
-    if(sessionStorage.getItem('user')){
+    if (sessionStorage.getItem('user')){
       return true;
     }
     return false;
@@ -39,29 +39,28 @@ export class ProductsComponent implements OnInit {
     this.productsPrice();
   }
   productsPrice(): void {
-    if(!this.isEmployee()) {
-    this.products.forEach(element => {
-      if (element.producttype != 3){
-      let valorA = element.costprice * 0.1;
-      let margen = element.saleprice - element.costprice;
-      if (margen > valorA) {
-        let excedente = margen - valorA;
-        excedente = excedente * 0.8;
-        element.saleprice = element.saleprice - excedente;
+    if (!this.isEmployee()) {
+      this.products.forEach(element => {
+        if (element.producttype != 3) {
+          let valorA = element.costprice * 0.1;
+          let margen = element.saleprice - element.costprice;
+          if (margen > valorA) {
+            let excedente = margen - valorA;
+            excedente = excedente * 0.8;
+            element.saleprice = element.saleprice - excedente;
+          }
+        } else {
+          let margen = element.saleprice - element.costprice;
+          let precioFinal = margen * 0.5;
+
+          element.saleprice -= precioFinal;
+        }
       }
-    }else{
-      let margen = element.saleprice - element.costprice;
-      let precioFinal = margen * 0.5;
-
-      element.saleprice -= precioFinal;
+      );
     }
-    }
-    );
   }
 
-  }
-  
-  login():void {
+  login(): void {
     this.router.navigate(['login']);
   }
 }

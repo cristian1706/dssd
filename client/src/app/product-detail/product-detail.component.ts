@@ -16,14 +16,15 @@ export class ProductDetailComponent implements OnInit {
               private location: Location) { }
 
   ngOnInit() {
-    this.getHero();
+    this.getProduct();
   }
 
-  getHero() {
+  getProduct() {
     const idProduct = + this.router.snapshot.paramMap.get('id');
     return this.productService.getProduct(idProduct).subscribe(
       (data: any) => {
         this.product = data.data[0];
+        this.productPrice();
       }
     );
   }
@@ -44,8 +45,12 @@ export class ProductDetailComponent implements OnInit {
     }
   }
   updatePrice(): number {
-    this.useCoupon(this.coupon.id);
-    this.product.saleprice = (this.product.saleprice * this.coupon.discount) / 100 ;
+    if (this.coupon.used !== 1) {
+      this.useCoupon(this.coupon.id);
+      this.product.saleprice = (this.product.saleprice * this.coupon.discount) / 100 ;
+    } else {
+      alert('El cupón ya fue utilizado');
+    }
     return this.product.saleprice;
   }
 
@@ -62,13 +67,39 @@ export class ProductDetailComponent implements OnInit {
   }
 
   buyProduct(): void {
+    if (confirm(`¿Desea comprar el producto ${this.product.name}? `)){
     alert(`Has comprado el producto ${this.product.name}`);
     this.location.back();
+    }
   }
 
   isEmployee(): boolean {
-    const employee = + sessionStorage.getItem('user');
-    return employee === 1;
+    if (sessionStorage.getItem('user')) {
+      return true;
+    }
+    return false;
+  }
+  logout(): void {
+    sessionStorage.clear();
+    sessionStorage.removeItem('user');
+    this.productPrice();
+  }
+  productPrice(): void {
+    if (!this.isEmployee()) {
+        if (this.product.producttype != 3) {
+          let valorA = this.product.costprice * 0.1;
+          let margen = this.product.saleprice - this.product.costprice;
+          if (margen > valorA) {
+            let excedente = margen - valorA;
+            excedente = excedente * 0.8;
+            this.product.saleprice = this.product.saleprice - excedente;
+          }
+        } else {
+          let margen = this.product.saleprice - this.product.costprice;
+          let precioFinal = margen * 0.5;
+          this.product.saleprice -= precioFinal;
+        }
+    }
   }
 }
 
