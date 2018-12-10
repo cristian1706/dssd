@@ -10,13 +10,16 @@
     </thead>
   
   <tbody *ngFor="let product of products"> 
+      
     <tr>
+      
       <td>{{ product.name }}</td>
       <td *ngIf="!isEmployee()">{{ product.saleprice  | number:'2.2-5' }}</td>
       <td *ngIf="isEmployee()">{{ product.costprice | number:'2.2-5' }}</td>
+      <!--<td>{{product.stock}}</td> -->
       <td><button class="btn-primary" (click)="getProduct(product.id)">Comprar</button></td>
-      
     </tr>
+  
   </tbody>
 </table>
 </div>

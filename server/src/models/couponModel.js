@@ -146,7 +146,8 @@ couponModel.updateCoupon = (couponData, callback) => {
 					if (data.existe == false) {
 						let sql = `
 						UPDATE coupon SET
-						number = ${connection.escape(couponData.number)},
+            number = ${connection.escape(couponData.number)},
+            used = ${connecition.escape(couponData.used)},
 						initial_date = ${connection.escape(couponData.initial_date)},
 						final_date = ${connection.escape(couponData.final_date)},
 						discount = ${connection.escape(couponData.discount)}

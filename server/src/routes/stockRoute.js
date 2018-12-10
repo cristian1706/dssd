@@ -7,13 +7,15 @@ module.exports = function(app) {
 	app.get('/product', (req, res) => {
 		let name = req.query.name;
 		let costprice = req.query.costprice;
-		let saleprice = req.query.saleprice;
+    let saleprice = req.query.saleprice;
+    let stock = req.query.stock;
 		let producttype = req.query.producttype;
 		stockModel.getProducts((err, data) => {
 			const response = data.filter(c => {
 				return (name ? (c.name === name) : true) &&
 				(costprice ? (c.costprice == costprice) : true) &&
-				(saleprice ? (c.saleprice == saleprice) : true) &&
+        (saleprice ? (c.saleprice == saleprice) : true) &&
+        (stock ? (c.stock == stock) : true) &&
 				(producttype ? (c.producttype == producttype) : true);
 			});
 			res.status(200).json(response);
@@ -28,7 +30,7 @@ module.exports = function(app) {
 					data: data.row
 				})
 			} else {
-				res.status(404).json({
+				res.status(200).json({
 					success: false,
 					msj: "No existe ese producto en la BD"
 				})
@@ -38,12 +40,12 @@ module.exports = function(app) {
 	});
 
 	app.post('/product', (req, res) => {
-		
 				const productData = {
 					id: null,
 					name: req.body.name,
 					costprice: req.body.costprice,
-					saleprice: req.body.saleprice,
+          saleprice: req.body.saleprice,
+          stock: req.body.stock,
 					producttype: req.body.producttype
 				};
 				stockModel.getProducttypeById(req.body.producttype, (err, data) => {
@@ -65,34 +67,53 @@ module.exports = function(app) {
 									}
 								});
 							} else {
-								res.status(550).json({
+								  res.status(550).json({
 									success: false,
 									msj: "El nombre de producto ya existe en la BD"
 								})
 							}
 						});
 					} else {
-						res.status(403).json({
+						  res.status(403).json({
 							success: false,
 							msj: `No existe el id ${req.body.producttype} de ese tipo de producto para ser asignado. Por favor, ingrese un tipo de producto valido`
 						})
 					}
 				});
 			
-	});
+  });
+  
+  app.put('/product/:id/buy', (req,res) => {
+    const product = {
+      id: req.params.id,
+      stock: req.body.stock
+    }
+    stockModel.buyProduct(product, (err,data) => {
+      if (data && data.msj == 'actualizado') {
+        res.json({
+          success: true,
+          msj: `Producto ${req.params.id} actualizado`
+        });
+      } else {
+        if (data.msj == 'no existe') {
+          res.status(404).json({
+            success: false,
+            msj: "No existe ese id en la bd"
+          });
+        }
+    };
+  });
+});
 
 	app.put('/product/:id', (req, res) => {
-		
 				const productData = {
 					id: req.params.id,
 					name: req.body.name,
 					costprice: req.body.costprice,
-					saleprice: req.body.saleprice,
+          saleprice: req.body.saleprice,
+          stock: req.body.stock,
 					producttype: req.body.producttype
-
 				};
-				stockModel.getProducttypeById(req.body.producttype, (err, data) => {
-					if (data.existe == true) {
 						stockModel.updateProduct(productData, (err, data) => {
 							if (data && data.msj == 'actualizado') {
 								res.json({
@@ -120,18 +141,22 @@ module.exports = function(app) {
 								}
 							}
 						});
-					} else {
-						res.status(403).json({
-							success: false,
-							msj: `No existe el id ${req.body.producttype} de ese tipo de producto para ser asignado. Por favor, ingrese un tipo de producto valido`
-						})
-					}
-				});
-			
+  });
+  
+  app.get('/products/employeeprice', (req,res) => {
+    let name = req.query.name;
+		let costprice = req.query.costprice;
+		stockModel.getProductsEmployee((err, data) => {
+			const response = data.filter(c => {
+				return (name ? (c.name === name) : true) &&
+				(costprice ? (c.costprice == costprice) : true);
+			});
+			res.status(200).json(response);
+		});
 	});
 
+
 	app.delete('/product/:id', (req, res) => {
-		
 				stockModel.deleteProduct(req.params.id, (err, data) => {
 					if (data && data.msj == 'borrado') {
 						res.json({
@@ -152,7 +177,6 @@ module.exports = function(app) {
 						}
 					}
 				});
-			
 	});
 
 

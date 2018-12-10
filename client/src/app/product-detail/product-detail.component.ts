@@ -2,18 +2,22 @@ import { Component, OnInit } from '@angular/core';
 import { ProductsService } from '../services/productService/products.service';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { Product } from '../productInterface';
+import { BonitaService } from '../services/bonitaService/bonita.service';
+
 @Component({
   selector: 'app-product-detail',
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css']
 })
 export class ProductDetailComponent implements OnInit {
-  product: any;
+  product: Product;
   idProduct: number;
   coupon: any;
   constructor(private productService: ProductsService,
               private router: ActivatedRoute,
-              private location: Location) { }
+              private location: Location,
+              private bonita: BonitaService) { }
 
   ngOnInit() {
     this.getProduct();
@@ -40,21 +44,24 @@ export class ProductDetailComponent implements OnInit {
         (data: any) => {
           this.coupon = data.data[0];
           this.updatePrice();
+        },
+        (err) => {
+          alert("El número de cupón no existe");
         }
       );
     }
   }
   updatePrice(): number {
     if (this.coupon.used !== 1) {
-      this.useCoupon(this.coupon.id);
+      //this.useCoupon(this.coupon.id);
       this.product.saleprice = (this.product.saleprice * this.coupon.discount) / 100 ;
     } else {
-      alert('El cupón ya fue utilizado');
+      alert('El cupón ya fue utilizado anteriormente');
     }
     return this.product.saleprice;
   }
 
-  useCoupon(idCoupon): boolean {
+  useCoupon(idCoupon): void {
     this.productService.useCoupon(idCoupon).subscribe(
       (data: any) => {
         alert(data.msj);
@@ -63,15 +70,39 @@ export class ProductDetailComponent implements OnInit {
         alert('Error al usar el cupon');
       }
     );
-    return true;
   }
 
   buyProduct(): void {
-    if (confirm(`¿Desea comprar el producto ${this.product.name}? `)){
-    alert(`Has comprado el producto ${this.product.name}`);
-    this.location.back();
+    this.bonita.login().subscribe(
+      (data: any) => {
+        console.log(data);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
     }
-  }
+    /*if(this.product.stock > 0){
+      if (confirm(`¿Desea comprar el producto ${this.product.name}? `)) {
+        
+        this.product.stock--;
+        this.productService.updateStock(this.product.id, this.product.stock).subscribe(
+          (data: any) => {
+            alert(`Has comprado el producto ${this.product.name}`);
+            this.location.back();
+          },
+          (err) => {
+            console.log(err);
+            alert('Error al comprar el producto');
+          }
+        );
+      }
+    }
+    else {
+      alert(`No hay stock del producto ${this.product.name}`);
+      this.location.back();
+    }
+  }*/
 
   isEmployee(): boolean {
     if (sessionStorage.getItem('user')) {

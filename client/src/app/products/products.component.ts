@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductsService } from '../services/productService/products.service';
 import { Router } from '@angular/router';
+import { Product } from '../productInterface';
+
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css']
 })
 export class ProductsComponent implements OnInit {
-  products: any;
+  products: Product[];
 
   constructor(private productsService: ProductsService,
     private router: Router) { }

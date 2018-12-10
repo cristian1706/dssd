@@ -31,7 +31,7 @@ module.exports = function(app) {
 					data: data.row
 				})
 			} else {
-				res.status(404).json({
+				res.status(200).json({
 					success: false,
 					msj: "No existe ese empleado en la BD"
 				})

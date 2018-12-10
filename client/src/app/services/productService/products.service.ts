@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ProductsComponent } from '../../products/products.component';
 import { LoginComponent } from '../../login/login.component';
+import { Product } from '../../productInterface';
+
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class ProductsService {
 
   constructor(private http: HttpClient) { }
@@ -17,12 +19,12 @@ export class ProductsService {
   loading: boolean;
   products: any;
 
-  getProducts(): Observable<ProductsComponent[]> {
-    return this.http.get<ProductsComponent[]>(this.productsUrl);
+  getProducts(): Observable<Product[]> {
+    return this.http.get<Product[]>(this.productsUrl);
   }
 
-  getProduct(id: number): Observable<ProductsComponent> {
-    return this.http.get<ProductsComponent>(`${this.productsUrl}/${id}`);
+  getProduct(id: number): Observable<Product> {
+    return this.http.get<Product>(`${this.productsUrl}/${id}`);
   }
 
   getUser(mail: string, pass: string): Observable<LoginComponent> {
@@ -35,6 +37,10 @@ export class ProductsService {
 
   useCoupon(idCoupon: number): Observable<Boolean> {
     return this.http.put<Boolean>(`${this.couponUrl}/use/${idCoupon}`, {});
+  }
+
+  updateStock(idProduct: number, stock: number): Observable<Boolean> {
+    return this.http.put<Boolean>(`${this.productsUrl}/${idProduct}/buy`, {stock});
   }
 
 }

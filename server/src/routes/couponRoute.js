@@ -29,7 +29,7 @@ module.exports = function(app) {
 					data: data.row
 				})
 			} else {
-				res.status(404).json({
+				res.status(200).json({
 					success: false,
 					msj: "No existe ese cupón en la BD"
 				})
@@ -74,7 +74,8 @@ module.exports = function(app) {
 	app.put('/coupon/:id', (req, res) => {
 		const couponData = {
 			id: req.params.id,
-			number: req.body.number,
+      number: req.body.number,
+      used: 0,
 			initial_date: req.body.initial_date,
 			final_date: req.body.final_date,
 			discount: req.body.discount
@@ -130,14 +131,14 @@ module.exports = function(app) {
 					} else {
 						res.status(403).json({
 							success: false,
-							msj: "Ese cupón ya está siendo usado"
+							msj: "Ese cupón ya fue usado"
 						})
 					}
 				});
 			} else {
 				res.status(404).json({
 					success: false,
-					msj: "No existe ese id en la bd"
+					msj: "No existe ese cupón en la bd"
 				})
 			}
 		});

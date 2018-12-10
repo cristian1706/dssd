@@ -48,9 +48,20 @@ stockModel.getProducts = (callback) => {
 	}
 };
 
+stockModel.getProductsEmployee = (callback) => {
+	if (connection) {
+		connection.query("SELECT id,name,costprice FROM product ORDER BY id", (err, rows) => {
+			if (err) {
+				throw err;
+			} else {
+				callback(null, rows);
+			}
+		})
+	}
+};
+
 stockModel.insertProduct = (productData, callback) => {
 	if (connection) {
-    	//productData.saleprice = calculateDiscountFromSalePrice(productData.saleprice, productData.costprice);
 		connection.query("INSERT INTO product SET ?", productData, (err, rows) => {
 			if (err) {
 				throw err;
@@ -74,8 +85,8 @@ stockModel.updateProduct = (productData, callback) => {
 						UPDATE product SET
 						name = ${connection.escape(productData.name)},
 						costprice = ${connection.escape(productData.costprice)},
-						saleprice = ${connection.escape(productData.saleprice)},
-						producttype = ${connection.escape(productData.producttype)}
+            saleprice = ${connection.escape(productData.saleprice)},
+            stock = ${connection.escape(productData.stock)}
 						WHERE id =  ${connection.escape(productData.id)}
 						`;
 						connection.query(sql, (err, rows) => {
@@ -101,6 +112,30 @@ stockModel.updateProduct = (productData, callback) => {
 		})
 	}
 };
+
+stockModel.buyProduct = (product, callback) => {
+  if (connection) {
+		let sql = `SELECT * FROM product WHERE id = ${connection.escape(product.id)}`;
+		connection.query(sql, (err, row) => {
+			if (row[0] != null) {
+						let sql = `
+						UPDATE product SET
+            stock = ${connection.escape(product.stock)}
+						WHERE id =  ${connection.escape(product.id)}
+						`;
+						connection.query(sql, (err, rows) => {
+							if (err) {
+								throw err;
+							} else {
+								callback(null, {
+									'msj': "actualizado"
+								});
+							}
+						})
+			}
+    });
+  }
+}
 
 stockModel.deleteProduct = (id, callback) => {
 	if (connection) {
@@ -219,29 +254,6 @@ stockModel.getProductById = (id, callback) => {
 		})
 	}
 };
-
-/*
-* calculateDiscountFromSalePrice calcula la diferencia entre el
-* precio de venta y precio de compra, donde si supera el margen
-* del 10% tiene que aplicarse un descuento al excedente
-*
-* @return integer
-*/
-// let calculateDiscountFromSalePrice = (productSalePrice, productCostPrice) => {
-// 	//margin guarda el 10% del costo del producto (productCostPrice)
-//   	let margen = productCostPrice * 0.1;
-//   	let diferencia = productSalePrice - productCostPrice;
-//   	if ( diferencia > margen ) {
-//   		let excendente = diferencia - margen;
-    
-//     	//80% del excedente
-//     	excedente = excedente * 0.8;
-    
-//     	//le resto al saleprice el excedente calculado (80% de la diferencia del 10%)
-//     	return productSalePrice - excedente;
-// 	}
-// };
-
 
 
 /* ----------------------------------- MODELO DE PRODUCTTYPE ------------------------------------*/

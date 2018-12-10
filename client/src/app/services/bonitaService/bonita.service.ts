@@ -10,11 +10,17 @@ export class BonitaService {
   private token: string;
   constructor(private http: HttpClient) { }
 
-  login(): Observable<any> {
-    const headers = new HttpHeaders({'Content-type': 'application/x-www-form-urlencoded'});
-    return this.http.post(this.baseUrl + 'loginservice', {username: 'walter.bates', password: 'bpm', redirect: false}, {headers});
-  }
+  login(): any {
+    const headers = new HttpHeaders({'Content-type': 'application/json'});
+    const data = {
+      username: 'walter.bates',
+      password: 'bpm',
+      redirect: false
+    }
+    const data2 = JSON.stringify(data);
 
+    return this.http.post('http://localhost:8080/bonita/loginservice', data2, {headers});
+  }
   // lista de procesos
   processList(token: string): Observable<any> {
     this.token = token;
