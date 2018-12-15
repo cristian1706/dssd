@@ -81,29 +81,29 @@ module.exports = function(app) {
 					}
 				});
 			
-  });
+  	});
   
-  app.put('/product/:id/buy', (req,res) => {
-    const product = {
-      id: req.params.id,
-      stock: req.body.stock
-    }
-    stockModel.buyProduct(product, (err,data) => {
-      if (data && data.msj == 'actualizado') {
-        res.json({
-          success: true,
-          msj: `Producto ${req.params.id} actualizado`
-        });
-      } else {
-        if (data.msj == 'no existe') {
-          res.status(404).json({
-            success: false,
-            msj: "No existe ese id en la bd"
-          });
-        }
-    };
-  });
-});
+	app.put('/product/:id/buy', (req,res) => {
+	    const product = {
+	      id: req.params.id,
+	      stock: req.body.stock
+	    }
+	    stockModel.buyProduct(product, (err,data) => {
+	      if (data && data.msj == 'actualizado') {
+	        res.json({
+	          success: true,
+	          msj: `Producto ${req.params.id} actualizado`
+	        });
+	      } else {
+	        if (data.msj == 'no existe') {
+	          res.status(404).json({
+	            success: false,
+	            msj: "No existe ese id en la bd"
+	          });
+	        }
+	    };
+	  });
+	});
 
 	app.put('/product/:id', (req, res) => {
 				const productData = {

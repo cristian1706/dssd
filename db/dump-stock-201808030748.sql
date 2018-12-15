@@ -28,6 +28,7 @@ CREATE TABLE `product` (
   `costprice` int(11) NOT NULL,
   `saleprice` int(11) NOT NULL,
   `producttype` int(11) NOT NULL,
+  `stock` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (producttype) REFERENCES producttype(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
